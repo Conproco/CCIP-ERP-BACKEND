@@ -13,4 +13,5 @@ use App\Http\Controllers\HumanResource\ManagementEmployees;
 
 Route::prefix('human-resource/employees')->group(function () {
     Route::get('/', [ManagementEmployees::class, 'index'])->name('hr.employees.index');
+    Route::get('/search', [ManagementEmployees::class, 'search'])->name('hr.employees.search');
 });

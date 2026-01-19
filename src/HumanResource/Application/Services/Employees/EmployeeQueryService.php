@@ -5,19 +5,25 @@ namespace Src\HumanResource\Application\Services\Employees;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInterface;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\CostLineRepositoryInterface;
 use Src\HumanResource\Application\Dto\EmployeeListResponseDto;
+use Src\HumanResource\Application\Dto\EmployeeSearchResponseDto;
 
 class EmployeeQueryService
 {
     // Propiedad movida aquí
     public array $pensionList = [
-        'Habitat', 'Integra', 'Prima', 'Profuturo', 'ONP'
+        'Habitat',
+        'Integra',
+        'Prima',
+        'Profuturo',
+        'ONP'
     ];
 
     public function __construct(
         private EmployeeRepositoryInterface $employeeRepository,
         private CostLineRepositoryInterface $costLineRepository,
-        private iterable $normalizers 
-    ) {}
+        private iterable $normalizers
+    ) {
+    }
 
     /**
      * getEmployees
@@ -54,10 +60,21 @@ class EmployeeQueryService
         return new EmployeeListResponseDto($employees, $costLinesArr, $pagination);
     }
 
-    public function getSearchData(?string $state, ?string $search, ?array $costLine): object
+    public function searchEmployees(?string $state, ?string $search, ?array $costLine, bool $paginate = true, int $perPage = 15): object
     {
         $employees = $this->employeeRepository->search($state, $search, $costLine);
-        return $this->applyNormalizers($employees, false); // Asumiendo que search no pagina igual
+        $costLines = $this->costLineRepository->getAll();
+        
+        foreach ($this->normalizers as $normalizer) {
+            if ($normalizer->supports($employees)) {
+                return $normalizer->normalize($employees, $costLines);
+            }
+            if ($normalizer->supports($employees)) {
+                $employees = $normalizer->normalize($employees);
+            }
+        }
+
+        return $employees;
     }
 
     public function getFormData(): array
@@ -79,8 +96,6 @@ class EmployeeQueryService
             $data->setCollection($items);
             return $data;
         }
-        
-        // ... lógica para no paginado
         return $data;
     }
 
