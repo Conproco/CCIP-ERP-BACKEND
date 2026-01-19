@@ -4,9 +4,7 @@
 
 use Src\HumanResource\Application\Normalizer\EmployeeListNormalizer;
 use Src\HumanResource\Application\Normalizer\EmployeeListResponseNormalizer;
-// Agrega aquí otros normalizers si los tienes, por ejemplo:
-// use Src\HumanResource\Application\Normalizer\ContractNormalizer;
-// use Src\HumanResource\Application\Normalizer\EmployeeDataNormalizer;
+use Src\HumanResource\Application\Normalizer\EmployeeCreateNormalizer;
 
 return [
     EmployeeListNormalizer::class => [
@@ -14,5 +12,8 @@ return [
     ],
     EmployeeListResponseNormalizer::class => [
         EmployeeListResponseNormalizer::class,
+    ],
+    EmployeeCreateNormalizer::class => [
+        EmployeeCreateNormalizer::class,
     ],
 ];

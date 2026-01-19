@@ -7,6 +7,7 @@ use Src\HumanResource\Application\Services\Employees\EmployeeQueryService;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInterface;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\CostLineRepositoryInterface;
 use Src\HumanResource\Application\Normalizer\EmployeeListResponseNormalizer;
+use Src\HumanResource\Application\Normalizer\EmployeeCreateNormalizer;
 
 class HumanResourceServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,9 @@ class HumanResourceServiceProvider extends ServiceProvider
             $this->app->bind($abstract, $concrete);
         }
 
+        // Bind EmployeeCreateNormalizer
+        $this->app->singleton(EmployeeCreateNormalizer::class);
+
         // Bind EmployeeQueryService with its dependencies
         $this->app->bind(EmployeeQueryService::class, function ($app) {
             return new EmployeeQueryService(
@@ -32,7 +36,8 @@ class HumanResourceServiceProvider extends ServiceProvider
                 [
                     $app->make(\Src\HumanResource\Application\Normalizer\EmployeeListNormalizer::class),
                     $app->make(EmployeeListResponseNormalizer::class)
-                ]
+                ],
+                $app->make(EmployeeCreateNormalizer::class)
             );
         });
     }

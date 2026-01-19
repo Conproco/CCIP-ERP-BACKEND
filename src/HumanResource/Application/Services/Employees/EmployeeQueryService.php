@@ -6,6 +6,9 @@ use Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInte
 use Src\HumanResource\Domain\Ports\Repositories\Employees\CostLineRepositoryInterface;
 use Src\HumanResource\Application\Dto\EmployeeListResponseDto;
 use Src\HumanResource\Application\Dto\EmployeeSearchResponseDto;
+use Src\HumanResource\Application\Dto\EmployeeCreateResponse;
+use Src\HumanResource\Application\Normalizer\EmployeeCreateNormalizer;
+use App\Models\DocumentSection;
 
 class EmployeeQueryService
 {
@@ -21,7 +24,8 @@ class EmployeeQueryService
     public function __construct(
         private EmployeeRepositoryInterface $employeeRepository,
         private CostLineRepositoryInterface $costLineRepository,
-        private iterable $normalizers
+        private iterable $normalizers,
+        private ?EmployeeCreateNormalizer $createNormalizer = null
     ) {
     }
 
@@ -64,7 +68,7 @@ class EmployeeQueryService
     {
         $employees = $this->employeeRepository->search($state, $search, $costLine);
         $costLines = $this->costLineRepository->getAll();
-        
+
         foreach ($this->normalizers as $normalizer) {
             if ($normalizer->supports($employees)) {
                 return $normalizer->normalize($employees, $costLines);
@@ -77,10 +81,40 @@ class EmployeeQueryService
         return $employees;
     }
 
-    public function getFormData(): array
+    /**
+     * Get data for create employee form
+     * Returns: pensions, costLines, sections
+     */
+    public function getCreateFormData(): array
     {
-        // Lógica de DTOs y Normalizers para el formulario
-        // ... (Tu código original de getCreateFormData)
+        $costLines = $this->costLineRepository->getAll();
+        $sections = $this->getDocumentSections();
+
+        $dto = new EmployeeCreateResponse(
+            $this->pensionList,
+            $costLines,
+            $sections
+        );
+
+        if ($this->createNormalizer) {
+            return $this->createNormalizer->normalize($dto);
+        }
+
+        return $dto->toArray();
+    }
+
+    /**
+     * Get visible document sections with subdivisions
+     */
+    private function getDocumentSections(): object
+    {
+        return DocumentSection::with([
+            'subdivisions' => function ($subq) {
+                $subq->where('is_visible', true);
+            }
+        ])
+            ->where('is_visible', true)
+            ->get();
     }
 
     // Helper para no repetir código de normalización

@@ -32,4 +32,10 @@ class ManagementEmployees extends Controller
         return response()->json($employees, 200);
     }
 
+    public function create(): JsonResponse
+    {
+        $response = $this->queryService->getCreateFormData();
+        return response()->json($response, 200);   
+    }
+
 }
