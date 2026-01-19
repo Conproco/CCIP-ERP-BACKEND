@@ -16,7 +16,6 @@ class RoleController extends Controller
     public function __construct(
         protected RoleService $roleService
     ) {}
-    //cambiamos rols_index a getModules
     public function rols_index(Request $request)
     {
         $data = ['modules' => $this->roleService->getModulesWithFunctionalities()];
@@ -50,7 +49,7 @@ class RoleController extends Controller
             'description' => $currentRole->description->value(),
             'functionalities' => $currentRole->functionalities,
         ], $request->validated());
-        
+
         $dto = UpdateRoleDTO::fromArray($validatedData);
         $role = $this->roleService->update($dto);
         

@@ -51,7 +51,7 @@ class CreateUserRequest extends FormRequest
                 Rule::unique('users', 'phone')
             ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role_id' => ['nullable', 'integer'], // Agregado aquí
+            'role_id' => ['nullable', 'integer'], 
             'area_id' => ['nullable', 'integer'], 
         ];
 
