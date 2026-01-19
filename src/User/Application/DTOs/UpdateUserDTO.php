@@ -24,10 +24,10 @@ final class UpdateUserDTO
     {
         return new self(
             id: (int)$data['id'],
-            name: $data['name'] ?? '',
-            email: isset($data['email']) ? new Email($data['email']) : new Email(''), 
-            dni: isset($data['dni']) ? new Dni($data['dni']) : new Dni(''),
-            phone: isset($data['phone']) ? new Phone($data['phone']) : new Phone(''),
+            name: $data['name'],
+            email: new Email($data['email']), 
+            dni: new Dni($data['dni']),
+            phone: new Phone($data['phone']),
             platform: $data['platform'] ?? '',
             roleId: isset($data['role_id']) ? (int)$data['role_id'] : null,
             areaId: isset($data['area_id']) ? (int)$data['area_id'] : null,

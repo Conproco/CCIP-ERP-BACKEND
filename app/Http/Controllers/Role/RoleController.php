@@ -22,7 +22,7 @@ class RoleController extends Controller
         return response()->json($data);
     }
 
-    public function getRols(Request $request)
+    public function getRoles(Request $request)
     {
         $filters = RoleFiltersDTO::fromArray($request->only(['searchQuery']));
         $data = $this->roleService->paginate($filters);

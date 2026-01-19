@@ -22,7 +22,6 @@ class User extends Authenticatable
     use Notifiable;
     //use TwoFactorAuthenticatable;
     use SoftDeletes;
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

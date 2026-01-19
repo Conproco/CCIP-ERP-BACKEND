@@ -23,7 +23,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //Roles
     Route::prefix('roles')->group(function () {
-        Route::get('/', [RoleController::class, 'getRols']);
+        Route::get('/', [RoleController::class, 'getRoles']);
         Route::get('/modules', [RoleController::class, 'rols_index']); // Mover arriba
         Route::get('/{id}', [RoleController::class, 'details']);       // Mover abajo
         Route::post('/', [RoleController::class, 'store']);

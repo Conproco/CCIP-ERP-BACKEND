@@ -26,7 +26,7 @@ final class UserFiltersDTO
     public function toArray(): array
     {
         return array_filter([
-            'search_query' => $this->searchQuery,
+            'searchQuery' => $this->searchQuery,
             'platforms' => $this->platforms,
             'role_id' => $this->roleId,
             'area_id' => $this->areaId,

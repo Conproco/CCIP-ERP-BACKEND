@@ -83,7 +83,7 @@ class UserController extends Controller
     {
         $roles = $this->roleService->getAllExceptAdmin();
         $data = [
-            'rols' => $roles,
+            'roles' => $roles,
             'areas' => $this->userService->getAllAreas()
         ];
         return response()->json($data, 200);

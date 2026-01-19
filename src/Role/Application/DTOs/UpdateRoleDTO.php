@@ -18,8 +18,8 @@ final class UpdateRoleDTO
     {
         return new self(
             id: (int)$data['id'],
-            name: new RoleName($data['name'] ?? ''),
-            description: new RoleDescription($data['description'] ?? ''),
+            name: new RoleName($data['name']),
+            description: new RoleDescription($data['description']),
             functionalities: $data['functionalities'] ?? [],
         );
     }
