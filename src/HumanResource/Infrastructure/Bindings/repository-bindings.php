@@ -1,0 +1,28 @@
+<?php
+
+// Bindings for Repositories
+
+use Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentEmployeeRepository;
+
+use Src\HumanResource\Domain\Ports\Repositories\Employees\ContractRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentContractRepository;
+
+use Src\HumanResource\Domain\Ports\Repositories\Employees\CostLineRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentCostLineRepository;
+
+// Puedes agregar más repositorios aquí según los vayas implementando
+use Src\HumanResource\Domain\Ports\Repositories\Employees\AddressRepositoryInterface;
+// use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentAddressRepository;
+
+return [
+    EmployeeRepositoryInterface::class => EloquentEmployeeRepository::class,
+    ContractRepositoryInterface::class => EloquentContractRepository::class,
+    CostLineRepositoryInterface::class => EloquentCostLineRepository::class,
+    AddressRepositoryInterface::class => EloquentAddressRepository::class,
+    // EducationRepositoryInterface::class => EloquentEducationRepository::class,
+    // EmergencyContactRepositoryInterface::class => EloquentEmergencyContactRepository::class,
+    // FamilyDependentRepositoryInterface::class => EloquentFamilyDependentRepository::class,
+    // HealthRepositoryInterface::class => EloquentHealthRepository::class,
+];
+
