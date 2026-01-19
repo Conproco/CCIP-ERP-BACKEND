@@ -104,7 +104,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
+            explode(',', string: (string) env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
 
@@ -130,7 +130,6 @@ return [
     'providers' => ServiceProvider::defaultProviders()->merge([
 
         
-        App\Providers\ScrambleServiceProvider::class,
     ])->toArray(),
 
 ];

@@ -22,14 +22,14 @@ class ScrambleServiceProvider extends ServiceProvider
         });
 
         // Filtrar solo rutas que comiencen con 'api/'
-        Scramble::routes(function (Route $route) {
-            // Solo documentar rutas que empiecen con 'api/'
-            // y que estén definidas en routes/api.php
-            return Str::startsWith($route->uri, 'api/') 
-                && !Str::contains($route->uri, ['sanctum', 'ignition']);
-        });
+        //Scramble::routes(function (Route $route) {
+        //    // Solo documentar rutas que empiecen con 'api/'
+        //    // y que estén definidas en routes/api.php
+        //    return Str::startsWith($route->uri, 'api/') 
+        //        && !Str::contains($route->uri, ['sanctum', 'ignition']);
+        //});
 
         // Ignorar rutas de autenticación web
-        Scramble::ignoreDefaultRoutes();
+        //Scramble::ignoreDefaultRoutes();
     }
 }
