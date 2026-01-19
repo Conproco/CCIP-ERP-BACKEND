@@ -7,7 +7,6 @@ use Src\User\Application\DTOs\UpdateUserDTO;
 use Src\User\Application\DTOs\UserFiltersDTO;
 use Src\User\Application\DTOs\UserResponseDTO;
 use Src\User\Application\Services\UserService;
-use App\Models\User;
 use Src\Role\Application\Services\RoleService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
@@ -132,11 +131,19 @@ class UserController extends Controller
 
     public function details(Request $request, $id)
     {
-        $data = [
-            'users' => User::with('role', 'area')->find($id)
-        ];
-        if ($request->wantsJson()) {
-            return response()->json($data);
+        $user = $this->userService->find($id);
+        $role = null;
+        if ($user->roleId) {
+            $roleEntity = $this->roleService->find($user->roleId);
+            $role = [
+                'id' => $roleEntity->id,
+                'name' => $roleEntity->name->value(),
+                'description' => $roleEntity->description->value(),
+            ];
         }
+        $area = $user->areaId ? $this->userService->getArea($user->areaId) : null;
+        
+        $response = UserResponseDTO::fromEntity($user, $role, $area);
+        return response()->json($response->toArray(), 200);
     }
 }
