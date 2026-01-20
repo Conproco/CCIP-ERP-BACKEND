@@ -113,5 +113,94 @@ class ManagementEmployees extends Controller
         return response()->json(['message' => 'Employee deleted successfully'], 200);
     }
 
-    
+    /**
+     * GET /api/human-resource/employees/{id}/details
+     * Detalles completos del empleado
+     */
+    public function details(int $id): JsonResponse
+    {
+        $details = $this->queryService->getEmployeeDetails($id);
+        return response()->json($details->toArray(), 200);
+    }
+
+    /**
+     * POST /api/human-resource/employees/{id}/fire
+     * Despedir empleado
+     */
+    public function fired(FiredContractEmployees $request, int $id): JsonResponse
+    {
+        $dto = $this->fireNormalizer->normalize($request, $id);
+        $this->fireUseCase->execute($dto);
+        return response()->json(['message' => 'Employee fired successfully'], 200);
+    }
+
+    /**
+     * POST /api/human-resource/employees/{id}/reentry
+     * Reingreso de empleado
+     */
+    public function reentry(ReentryEmployeeRequest $request, int $id): JsonResponse
+    {
+        // $id aquí es el contract_id según el legacy
+        $dto = new ReentryEmployeeDto(
+            contractId: $id,
+            reentryDate: $request->input('reentry_date')
+        );
+        $this->reentryUseCase->execute($dto);
+        return response()->json(['message' => 'Employee re-entry successful'], 200);
+    }
+
+    /**
+     * GET /api/human-resource/employees/{id}/profile-image
+     * Obtener imagen de perfil
+     */
+    public function showProfileImage(int $id)
+    {
+        $image = $this->queryService->getProfileImage($id);
+
+        if (!$image) {
+            return response()->json(['error' => 'Image not found'], 404);
+        }
+        return $image;
+    }
+
+    /**
+     * GET /api/human-resource/employees/education/{id}/download-cv
+     * Descargar CV del empleado
+     */
+    public function downloadCv(int $id)
+    {
+        $file = $this->queryService->downloadCurriculum($id);
+
+        if (!$file) {
+            return response()->json(['error' => 'CV not found'], 404);
+        }
+
+        return $file;
+    }
+
+    /**
+     * GET /api/human-resource/employees/contract/{id}/discharge-document
+     * Ver documento de baja
+     */
+    public function showDischargeDocument(int $id)
+    {
+        $document = $this->queryService->getDischargeDocument($id);
+
+        if (!$document) {
+            return response()->json(['error' => 'Document not found'], 404);
+        }
+
+        return $document;
+    }
+
+    /**
+     * GET /api/human-resource/employees/happy-birthday
+     * Empleados con cumpleaños próximos
+     */
+    public function happyBirthday(): JsonResponse
+    {
+        $data = $this->queryService->getUpcomingBirthdays();
+        return response()->json(['happyBirthday' => $data], 200);
+    }
+
 }
