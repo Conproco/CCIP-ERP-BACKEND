@@ -7,6 +7,9 @@ use Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInte
 use App\Models\Employee as EmployeeModel;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
+use Src\Shared\Domain\ValueObjects\Dni;
+use Src\Shared\Domain\ValueObjects\Email;
+use Src\Shared\Domain\ValueObjects\Telefono;
 
 class EloquentEmployeeRepository implements EmployeeRepositoryInterface
 {
@@ -138,10 +141,10 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
             gender: $model->gender,
             stateCivil: $model->state_civil,
             birthdate: $model->birthdate,
-            dni: $model->dni,
-            email: $model->email,
-            emailCompany: $model->email_company,
-            phone1: $model->phone1,
+            dni: new Dni($model->dni), 
+            email: new Email($model->email),
+            emailCompany: $model->email_company ? new Email($model->email_company) : null, 
+            phone1: new Telefono($model->phone1),
             croppedImage: $model->cropped_image,
             lPolicy: $model->l_policy,
             sctrExpDate: $model->sctr_exp_date,

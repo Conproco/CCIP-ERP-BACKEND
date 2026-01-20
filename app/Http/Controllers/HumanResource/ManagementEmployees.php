@@ -92,5 +92,26 @@ class ManagementEmployees extends Controller
         return response()->json($response, 200);
     }
 
+    /**
+     * PUT /api/human-resource/employees/{id}
+     * Actualizar empleado existente
+     */
+    public function update(UpdateManagementEmployees $request, int $id): JsonResponse
+    {
+        $dto = $this->updateNormalizer->normalize($request, $id);
+        $this->updateUseCase->execute($dto);
+        return response()->json(['message' => 'Employee updated successfully'], 200);
+    }
+
+    /**
+     * DELETE /api/human-resource/employees/{id}
+     * Eliminar empleado
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $this->deleteUseCase->execute($id);
+        return response()->json(['message' => 'Employee deleted successfully'], 200);
+    }
+
     
 }
