@@ -5,7 +5,13 @@ namespace Src\HumanResource\Providers;
 use Illuminate\Support\ServiceProvider;
 use Src\HumanResource\Application\Services\Employees\EmployeeQueryService;
 use Src\HumanResource\Application\UseCases\Employees\StoreEmployeeUseCase;
+use Src\HumanResource\Application\UseCases\Employees\UpdateEmployeeUseCase;
+use Src\HumanResource\Application\UseCases\Employees\FireEmployeeUseCase;
+use Src\HumanResource\Application\UseCases\Employees\ReentryEmployeeUseCase;
+use Src\HumanResource\Application\UseCases\Employees\DeleteEmployeeUseCase;
 use Src\HumanResource\Application\Normalizer\StoreEmployeeRequestNormalizer;
+use Src\HumanResource\Application\Normalizer\UpdateEmployeeRequestNormalizer;
+use Src\HumanResource\Application\Normalizer\FireEmployeeRequestNormalizer;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInterface;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\ContractRepositoryInterface;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\EducationRepositoryInterface;
@@ -34,11 +40,11 @@ class HumanResourceServiceProvider extends ServiceProvider
             $this->app->bind($abstract, $concrete);
         }
 
-        // Bind EmployeeCreateNormalizer
+        // Bind Normalizers
         $this->app->singleton(EmployeeCreateNormalizer::class);
-
-        // Bind StoreEmployeeRequestNormalizer
         $this->app->singleton(StoreEmployeeRequestNormalizer::class);
+        $this->app->singleton(UpdateEmployeeRequestNormalizer::class);
+        $this->app->singleton(FireEmployeeRequestNormalizer::class);
 
         // Bind EmployeeQueryService with its dependencies
         $this->app->bind(EmployeeQueryService::class, function ($app) {
@@ -49,11 +55,12 @@ class HumanResourceServiceProvider extends ServiceProvider
                     $app->make(\Src\HumanResource\Application\Normalizer\EmployeeListNormalizer::class),
                     $app->make(EmployeeListResponseNormalizer::class)
                 ],
-                $app->make(EmployeeCreateNormalizer::class)
+                $app->make(EmployeeCreateNormalizer::class),
+                $app->make(FileStorageInterface::class)
             );
         });
 
-        // Bind StoreEmployeeUseCase with all its dependencies
+        // Bind StoreEmployeeUseCase
         $this->app->bind(StoreEmployeeUseCase::class, function ($app) {
             return new StoreEmployeeUseCase(
                 $app->make(EmployeeRepositoryInterface::class),
@@ -66,6 +73,43 @@ class HumanResourceServiceProvider extends ServiceProvider
                 $app->make(FileStorageInterface::class)
             );
         });
+
+        // Bind UpdateEmployeeUseCase
+        $this->app->bind(UpdateEmployeeUseCase::class, function ($app) {
+            return new UpdateEmployeeUseCase(
+                $app->make(EmployeeRepositoryInterface::class),
+                $app->make(ContractRepositoryInterface::class),
+                $app->make(EducationRepositoryInterface::class),
+                $app->make(AddressRepositoryInterface::class),
+                $app->make(EmergencyContactRepositoryInterface::class),
+                $app->make(FamilyDependentRepositoryInterface::class),
+                $app->make(HealthRepositoryInterface::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
+
+        // Bind FireEmployeeUseCase
+        $this->app->bind(FireEmployeeUseCase::class, function ($app) {
+            return new FireEmployeeUseCase(
+                $app->make(EmployeeRepositoryInterface::class),
+                $app->make(ContractRepositoryInterface::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
+
+        // Bind ReentryEmployeeUseCase
+        $this->app->bind(ReentryEmployeeUseCase::class, function ($app) {
+            return new ReentryEmployeeUseCase(
+                $app->make(ContractRepositoryInterface::class)
+            );
+        });
+
+        // Bind DeleteEmployeeUseCase
+        $this->app->bind(DeleteEmployeeUseCase::class, function ($app) {
+            return new DeleteEmployeeUseCase(
+                $app->make(EmployeeRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -73,4 +117,3 @@ class HumanResourceServiceProvider extends ServiceProvider
         // Register routes, migrations, etc. if needed
     }
 }
-
