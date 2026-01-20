@@ -15,4 +15,5 @@ Route::prefix('human-resource/employees')->group(function () {
     Route::get('/', [ManagementEmployees::class, 'index'])->name('hr.employees.index');
     Route::get('/search', [ManagementEmployees::class, 'search'])->name('hr.employees.search');
     Route::get('/information_additional', [ManagementEmployees::class, 'create'])->name('hr.employees.create');
+    Route::post('/', [ManagementEmployees::class, 'store'])->name('hr.employees.store');
 });

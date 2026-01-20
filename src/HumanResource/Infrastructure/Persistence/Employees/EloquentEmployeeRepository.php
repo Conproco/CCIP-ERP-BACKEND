@@ -48,6 +48,13 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
         return $employee;
     }
 
+    public function update(EmployeeEntity $employee): EmployeeEntity
+    {
+        $model = $this->model->findOrFail($employee->getId());
+        $model->update($employee->toArray());
+        return $employee;
+    }
+
     public function delete(int $id): void
     {
         $this->model->findOrFail($id)->delete();

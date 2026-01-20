@@ -5,6 +5,7 @@
 use Src\HumanResource\Application\Normalizer\EmployeeListNormalizer;
 use Src\HumanResource\Application\Normalizer\EmployeeListResponseNormalizer;
 use Src\HumanResource\Application\Normalizer\EmployeeCreateNormalizer;
+use Src\HumanResource\Application\Normalizer\StoreEmployeeRequestNormalizer;
 
 return [
     EmployeeListNormalizer::class => [
@@ -15,5 +16,8 @@ return [
     ],
     EmployeeCreateNormalizer::class => [
         EmployeeCreateNormalizer::class,
+    ],
+    StoreEmployeeRequestNormalizer::class => [
+        StoreEmployeeRequestNormalizer::class,
     ],
 ];
