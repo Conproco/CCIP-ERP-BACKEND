@@ -109,6 +109,7 @@ class HumanResourceServiceProvider extends ServiceProvider
             return new FireEmployeeUseCase(
                 $app->make(EmployeeRepositoryInterface::class),
                 $app->make(ContractRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Employees\PayrollDetailRepositoryInterface::class),
                 $app->make(FileStorageInterface::class)
             );
         });

@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\DB;
 use Src\HumanResource\Application\Dto\FireEmployeeDto;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInterface;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\ContractRepositoryInterface;
+use Src\HumanResource\Domain\Ports\Repositories\Employees\PayrollDetailRepositoryInterface;
 use Src\HumanResource\Domain\Exceptions\EmployeeNotFoundException;
 use Src\HumanResource\Domain\Exceptions\ContractNotFoundException;
 use Src\Shared\Application\Interfaces\FileStorageInterface;
-use App\Models\PayrollDetail;
 
 /**
  * Caso de uso para despedir un empleado.
@@ -21,6 +21,7 @@ class FireEmployeeUseCase
     public function __construct(
         private EmployeeRepositoryInterface $employeeRepository,
         private ContractRepositoryInterface $contractRepository,
+        private PayrollDetailRepositoryInterface $payrollDetailRepository,
         private FileStorageInterface $fileStorage
     ) {
     }
@@ -69,16 +70,16 @@ class FireEmployeeUseCase
             }
 
             // Actualizar PayrollDetail si existe
-            $payroll = PayrollDetail::where('employee_id', $dto->employeeId)
-                ->latest('created_at')
-                ->first();
+            $payroll = $this->payrollDetailRepository->findLatestByEmployeeId($dto->employeeId);
 
             if ($payroll) {
-                $payroll->update([
-                    'fired_date' => $dto->firedDate,
-                    'days_taken' => $dto->daysTaken,
-                ]);
+                $this->payrollDetailRepository->updateFiredData(
+                    $payroll->id,
+                    $dto->firedDate,
+                    $dto->daysTaken
+                );
             }
         });
     }
 }
+

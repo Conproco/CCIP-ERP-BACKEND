@@ -37,6 +37,10 @@ use Src\HumanResource\Infrastructure\Persistence\ExternalEmployees\EloquentExter
 use Src\HumanResource\Domain\Ports\Repositories\GrupalDocuments\GrupalDocumentRepositoryInterface;
 use Src\HumanResource\Infrastructure\Persistence\GrupalDocuments\EloquentGrupalDocumentRepository;
 
+// PayrollDetail Repository
+use Src\HumanResource\Domain\Ports\Repositories\Employees\PayrollDetailRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentPayrollDetailRepository;
+
 return [
         // Employees
     EmployeeRepositoryInterface::class => EloquentEmployeeRepository::class,
@@ -48,6 +52,7 @@ return [
     FamilyDependentRepositoryInterface::class => EloquentFamilyDependentRepository::class,
     HealthRepositoryInterface::class => EloquentHealthRepository::class,
     DocumentSectionRepositoryInterface::class => EloquentDocumentSectionRepository::class,
+    PayrollDetailRepositoryInterface::class => EloquentPayrollDetailRepository::class,
 
         // External Employees
     ExternalEmployeeRepositoryInterface::class => EloquentExternalEmployeeRepository::class,
@@ -55,6 +60,7 @@ return [
         // GrupalDocuments
     GrupalDocumentRepositoryInterface::class => EloquentGrupalDocumentRepository::class,
 ];
+
 
 
 
