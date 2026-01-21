@@ -26,7 +26,12 @@ use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentFamilyDepende
 use Src\HumanResource\Domain\Ports\Repositories\Employees\HealthRepositoryInterface;
 use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentHealthRepository;
 
+// External Employees Repositories
+use Src\HumanResource\Domain\Ports\Repositories\ExternalEmployees\ExternalEmployeeRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\ExternalEmployees\EloquentExternalEmployeeRepository;
+
 return [
+        // Employees
     EmployeeRepositoryInterface::class => EloquentEmployeeRepository::class,
     ContractRepositoryInterface::class => EloquentContractRepository::class,
     CostLineRepositoryInterface::class => EloquentCostLineRepository::class,
@@ -35,4 +40,8 @@ return [
     EmergencyContactRepositoryInterface::class => EloquentEmergencyContactRepository::class,
     FamilyDependentRepositoryInterface::class => EloquentFamilyDependentRepository::class,
     HealthRepositoryInterface::class => EloquentHealthRepository::class,
+
+        // External Employees
+    ExternalEmployeeRepositoryInterface::class => EloquentExternalEmployeeRepository::class,
 ];
+

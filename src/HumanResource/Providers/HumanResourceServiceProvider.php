@@ -24,6 +24,14 @@ use Src\HumanResource\Application\Normalizer\EmployeeListResponseNormalizer;
 use Src\HumanResource\Application\Normalizer\EmployeeCreateNormalizer;
 use Src\Shared\Application\Interfaces\FileStorageInterface;
 
+// External Employees imports
+use Src\HumanResource\Application\Services\ExternalEmployees\ExternalEmployeesQueryService;
+use Src\HumanResource\Application\Services\ExternalEmployees\ExternalEmployeesCommandService;
+use Src\HumanResource\Application\Normalizer\ExternalEmployees\ExternalEmployeeIndexNormalizer;
+use Src\HumanResource\Application\Normalizer\ExternalEmployees\StoreExternalEmployeeRequestNormalizer;
+use Src\HumanResource\Application\Normalizer\ExternalEmployees\UpdateExternalEmployeeRequestNormalizer;
+use Src\HumanResource\Domain\Ports\Repositories\ExternalEmployees\ExternalEmployeeRepositoryInterface;
+
 class HumanResourceServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -45,6 +53,11 @@ class HumanResourceServiceProvider extends ServiceProvider
         $this->app->singleton(StoreEmployeeRequestNormalizer::class);
         $this->app->singleton(UpdateEmployeeRequestNormalizer::class);
         $this->app->singleton(FireEmployeeRequestNormalizer::class);
+
+        // External Employees Normalizers
+        $this->app->singleton(ExternalEmployeeIndexNormalizer::class);
+        $this->app->singleton(StoreExternalEmployeeRequestNormalizer::class);
+        $this->app->singleton(UpdateExternalEmployeeRequestNormalizer::class);
 
         // Bind EmployeeQueryService with its dependencies
         $this->app->bind(EmployeeQueryService::class, function ($app) {
@@ -110,6 +123,24 @@ class HumanResourceServiceProvider extends ServiceProvider
                 $app->make(EmployeeRepositoryInterface::class)
             );
         });
+
+        // Bind ExternalEmployeesQueryService
+        $this->app->bind(ExternalEmployeesQueryService::class, function ($app) {
+            return new ExternalEmployeesQueryService(
+                $app->make(CostLineRepositoryInterface::class),
+                $app->make(ExternalEmployeeRepositoryInterface::class),
+                $app->make(ExternalEmployeeIndexNormalizer::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
+
+        // Bind ExternalEmployeesCommandService
+        $this->app->bind(ExternalEmployeesCommandService::class, function ($app) {
+            return new ExternalEmployeesCommandService(
+                $app->make(ExternalEmployeeRepositoryInterface::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -117,3 +148,5 @@ class HumanResourceServiceProvider extends ServiceProvider
         // Register routes, migrations, etc. if needed
     }
 }
+
+
