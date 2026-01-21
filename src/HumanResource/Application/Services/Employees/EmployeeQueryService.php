@@ -4,15 +4,15 @@ namespace Src\HumanResource\Application\Services\Employees;
 
 use Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInterface;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\CostLineRepositoryInterface;
+use Src\HumanResource\Domain\Ports\Repositories\Employees\EducationRepositoryInterface;
+use Src\HumanResource\Domain\Ports\Repositories\Employees\ContractRepositoryInterface;
+use Src\HumanResource\Domain\Ports\Repositories\Employees\DocumentSectionRepositoryInterface;
 use Src\HumanResource\Application\Dto\EmployeeListResponseDto;
 use Src\HumanResource\Application\Dto\EmployeeSearchResponseDto;
 use Src\HumanResource\Application\Dto\EmployeeCreateResponse;
 use Src\HumanResource\Application\Dto\EmployeeDetailsDto;
 use Src\HumanResource\Application\Normalizer\EmployeeCreateNormalizer;
 use Src\Shared\Application\Interfaces\FileStorageInterface;
-use App\Models\DocumentSection;
-use App\Models\Contract;
-use App\Models\Education;
 use Carbon\Carbon;
 
 class EmployeeQueryService
@@ -33,6 +33,9 @@ class EmployeeQueryService
     public function __construct(
         private EmployeeRepositoryInterface $employeeRepository,
         private CostLineRepositoryInterface $costLineRepository,
+        private EducationRepositoryInterface $educationRepository,
+        private ContractRepositoryInterface $contractRepository,
+        private DocumentSectionRepositoryInterface $documentSectionRepository,
         private iterable $normalizers,
         private ?EmployeeCreateNormalizer $createNormalizer = null,
         private ?FileStorageInterface $fileStorage = null
@@ -89,7 +92,7 @@ class EmployeeQueryService
     public function getCreateFormData(): array
     {
         $costLines = $this->costLineRepository->getAll();
-        $sections = $this->getDocumentSections();
+        $sections = $this->documentSectionRepository->getAllVisibleWithSubdivisions();
 
         $dto = new EmployeeCreateResponse(
             $this->pensionList,
@@ -171,15 +174,15 @@ class EmployeeQueryService
      */
     public function downloadCurriculum(int $educationId)
     {
-        $education = Education::find($educationId);
+        $education = $this->educationRepository->find($educationId);
 
-        if (!$education || !$education->curriculum_vitae || !$this->fileStorage) {
+        if (!$education || !$education->getCurriculumVitae() || !$this->fileStorage) {
             return null;
         }
 
         return $this->fileStorage->download(
-            self::CURRICULUM_PATH . $education->curriculum_vitae,
-            $education->curriculum_vitae
+            self::CURRICULUM_PATH . $education->getCurriculumVitae(),
+            $education->getCurriculumVitae()
         );
     }
 
@@ -188,13 +191,13 @@ class EmployeeQueryService
      */
     public function getDischargeDocument(int $contractId)
     {
-        $contract = Contract::find($contractId);
+        $contract = $this->contractRepository->find($contractId);
 
-        if (!$contract || !$contract->discharge_document || !$this->fileStorage) {
+        if (!$contract || !$contract->getDischargeDocument() || !$this->fileStorage) {
             return null;
         }
 
-        return $this->fileStorage->get(self::DISCHARGE_DOCUMENT_PATH . $contract->discharge_document);
+        return $this->fileStorage->get(self::DISCHARGE_DOCUMENT_PATH . $contract->getDischargeDocument());
     }
 
     /**
@@ -215,17 +218,6 @@ class EmployeeQueryService
                 'birthdate' => $employee->birthdate ?? $employee->getBirthdate(),
             ];
         })->values()->toArray();
-    }
-
-    private function getDocumentSections(): object
-    {
-        return DocumentSection::with([
-            'subdivisions' => function ($subq) {
-                $subq->where('is_visible', true);
-            }
-        ])
-            ->where('is_visible', true)
-            ->get();
     }
 
     private function applyNormalizers($data, bool $isPaginated)
@@ -256,4 +248,5 @@ class EmployeeQueryService
         return $costLinesArr;
     }
 }
+
 

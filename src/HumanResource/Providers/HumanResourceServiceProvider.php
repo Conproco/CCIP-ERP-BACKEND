@@ -64,6 +64,9 @@ class HumanResourceServiceProvider extends ServiceProvider
             return new EmployeeQueryService(
                 $app->make(EmployeeRepositoryInterface::class),
                 $app->make(CostLineRepositoryInterface::class),
+                $app->make(EducationRepositoryInterface::class),
+                $app->make(ContractRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Employees\DocumentSectionRepositoryInterface::class),
                 [
                     $app->make(\Src\HumanResource\Application\Normalizer\EmployeeListNormalizer::class),
                     $app->make(EmployeeListResponseNormalizer::class)
@@ -106,6 +109,7 @@ class HumanResourceServiceProvider extends ServiceProvider
             return new FireEmployeeUseCase(
                 $app->make(EmployeeRepositoryInterface::class),
                 $app->make(ContractRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Employees\PayrollDetailRepositoryInterface::class),
                 $app->make(FileStorageInterface::class)
             );
         });
@@ -141,6 +145,27 @@ class HumanResourceServiceProvider extends ServiceProvider
                 $app->make(FileStorageInterface::class)
             );
         });
+
+        // Bind GrupalDocumentsQueryService
+        $this->app->bind(\Src\HumanResource\Application\Services\GrupalDocuments\GrupalDocumentsQueryService::class, function ($app) {
+            return new \Src\HumanResource\Application\Services\GrupalDocuments\GrupalDocumentsQueryService(
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\GrupalDocuments\GrupalDocumentRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Application\Normalizer\GrupalDocuments\GrupalDocumentIndexNormalizer::class)
+            );
+        });
+
+        // Bind GrupalDocumentsCommandService
+        $this->app->bind(\Src\HumanResource\Application\Services\GrupalDocuments\GrupalDocumentsCommandService::class, function ($app) {
+            return new \Src\HumanResource\Application\Services\GrupalDocuments\GrupalDocumentsCommandService(
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\GrupalDocuments\GrupalDocumentRepositoryInterface::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
+
+        // GrupalDocuments Normalizers
+        $this->app->singleton(\Src\HumanResource\Application\Normalizer\GrupalDocuments\GrupalDocumentIndexNormalizer::class);
+        $this->app->singleton(\Src\HumanResource\Application\Normalizer\GrupalDocuments\StoreGrupalDocumentRequestNormalizer::class);
+        $this->app->singleton(\Src\HumanResource\Application\Normalizer\GrupalDocuments\UpdateGrupalDocumentRequestNormalizer::class);
     }
 
     public function boot(): void
@@ -148,5 +173,6 @@ class HumanResourceServiceProvider extends ServiceProvider
         // Register routes, migrations, etc. if needed
     }
 }
+
 
 

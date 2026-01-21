@@ -15,6 +15,11 @@ use Src\HumanResource\Application\Normalizer\ExternalEmployees\ExternalEmployeeI
 use Src\HumanResource\Application\Normalizer\ExternalEmployees\StoreExternalEmployeeRequestNormalizer;
 use Src\HumanResource\Application\Normalizer\ExternalEmployees\UpdateExternalEmployeeRequestNormalizer;
 
+// GrupalDocuments Normalizers
+use Src\HumanResource\Application\Normalizer\GrupalDocuments\GrupalDocumentIndexNormalizer;
+use Src\HumanResource\Application\Normalizer\GrupalDocuments\StoreGrupalDocumentRequestNormalizer;
+use Src\HumanResource\Application\Normalizer\GrupalDocuments\UpdateGrupalDocumentRequestNormalizer;
+
 return [
         // Employees
     EmployeeListNormalizer::class => [
@@ -46,6 +51,19 @@ return [
     UpdateExternalEmployeeRequestNormalizer::class => [
         UpdateExternalEmployeeRequestNormalizer::class,
     ],
+
+        // GrupalDocuments
+    GrupalDocumentIndexNormalizer::class => [
+        GrupalDocumentIndexNormalizer::class,
+    ],
+    StoreGrupalDocumentRequestNormalizer::class => [
+        StoreGrupalDocumentRequestNormalizer::class,
+    ],
+    UpdateGrupalDocumentRequestNormalizer::class => [
+        UpdateGrupalDocumentRequestNormalizer::class,
+    ],
 ];
+
+
 
 

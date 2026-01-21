@@ -24,7 +24,8 @@ class Contract
         private ?string $personalSegment = null,
         private ?string $dischargeDocument = null,
         private ?string $cuspp = null,
-    ) {}
+    ) {
+    }
 
     // Getters
     public function getId(): ?int
@@ -80,6 +81,11 @@ class Contract
     public function isFired(): bool
     {
         return $this->state === 'Fired';
+    }
+
+    public function getDischargeDocument(): ?string
+    {
+        return $this->dischargeDocument;
     }
 
     // Setters
