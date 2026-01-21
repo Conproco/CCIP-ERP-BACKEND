@@ -12,7 +12,8 @@ class UnitServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->bind(UnitRepository::class, EloquentUnitRepository::class);
+        $this->app->bind(UnitRepository::class, EloquentUnitRepository::class,
+                        UnitRepository::class);
 
         $this->app->singleton(UnitService::class, function ($app) {
             return new UnitService(

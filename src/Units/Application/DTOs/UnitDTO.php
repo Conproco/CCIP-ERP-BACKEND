@@ -2,7 +2,7 @@
 
 
 namespace Src\Units\Application\DTOs;
-use App\Models\Unit;
+use Src\Units\Domain\Entities\UnitEntity as Unit;
 
 
 final class UnitDTO

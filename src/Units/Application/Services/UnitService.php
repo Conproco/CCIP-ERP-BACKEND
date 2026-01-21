@@ -2,7 +2,6 @@
 
 namespace Src\Units\Application\Services;
 
-use App\Models\Unit;
 use Src\Units\Domain\Exceptions\UnitNotFoundException;
 use Src\Units\Domain\Repositories\UnitRepository;
 use Src\Product\Domain\Exceptions\ProductNotFoundException;

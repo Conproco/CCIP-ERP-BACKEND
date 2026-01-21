@@ -12,4 +12,7 @@ return [
     Src\Role\Providers\RoleServiceProvider::class,
     Src\Product\Providers\ProductServiceProvider::class,
     Src\Units\Providers\UnitServiceProvider::class,
+    
+    Src\HumanResource\Providers\HumanResourceServiceProvider::class,
+    Src\Shared\Providers\FileServiceProvider::class,
 ];

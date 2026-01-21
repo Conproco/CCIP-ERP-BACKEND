@@ -17,13 +17,4 @@ class Kernel extends ConsoleKernel
         $schedule->command('status:process-daily-r-h')->dailyAt('23:59');
     }
 
-    /**
-     * Register the commands for the application.
-     */
-    protected function commands(): void
-    {
-        $this->load(__DIR__.'/Commands');
-
-        require base_path('routes/console.php');
-    }
 }

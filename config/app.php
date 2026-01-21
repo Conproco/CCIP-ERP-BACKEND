@@ -129,11 +129,11 @@ return [
 
     'providers' => ServiceProvider::defaultProviders()->merge([
 
-        
-        App\Providers\ScrambleServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-        Src\HumanResource\Providers\HumanResourceServiceProvider::class,
-        Src\Shared\Providers\FileServiceProvider::class,
+        //MOVIDOS HACIA BOOTSTRAP/PROVIDERS.PHP POR CONFIG DE VERSION DE LARAVEL 11
+        //App\Providers\ScrambleServiceProvider::class, 
+        //App\Providers\RouteServiceProvider::class,
+        //Src\HumanResource\Providers\HumanResourceServiceProvider::class,
+        //Src\Shared\Providers\FileServiceProvider::class,
     ])->toArray(),
 
 ];

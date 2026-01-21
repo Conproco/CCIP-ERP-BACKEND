@@ -8,7 +8,6 @@ use Src\HumanResource\Domain\Ports\Repositories\Employees\EducationRepositoryInt
 use Src\HumanResource\Domain\Ports\Repositories\Employees\ContractRepositoryInterface;
 use Src\HumanResource\Domain\Ports\Repositories\Employees\DocumentSectionRepositoryInterface;
 use Src\HumanResource\Application\Dto\EmployeeListResponseDto;
-use Src\HumanResource\Application\Dto\EmployeeSearchResponseDto;
 use Src\HumanResource\Application\Dto\EmployeeCreateResponse;
 use Src\HumanResource\Application\Dto\EmployeeDetailsDto;
 use Src\HumanResource\Application\Normalizer\EmployeeCreateNormalizer;
