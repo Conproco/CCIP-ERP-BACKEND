@@ -130,6 +130,10 @@ return [
     'providers' => ServiceProvider::defaultProviders()->merge([
 
         
+        App\Providers\ScrambleServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+        Src\HumanResource\Providers\HumanResourceServiceProvider::class,
+        Src\Shared\Providers\FileServiceProvider::class,
     ])->toArray(),
 
 ];
