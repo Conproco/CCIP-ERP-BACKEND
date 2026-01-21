@@ -64,9 +64,11 @@ class UserController extends Controller
     public function getUser($id)
     {
         $user = $this->userService->find($id);
+        $permissions = [];
         $role = null;
         if ($user->roleId) {
-            $roleEntity = $this->roleService->find($user->roleId);
+            $roleEntity = $this->roleService->getWithFunctionalities($user->roleId);
+            $permissions = $roleEntity -> functionalities;
             $role = [
                 'id' => $roleEntity->id,
                 'name' => $roleEntity->name->value(),
@@ -75,7 +77,7 @@ class UserController extends Controller
         }
         $area = $user->areaId ? $this->userService->getArea($user->areaId) : null;
         
-        $response = UserResponseDTO::fromEntity($user, $role, $area);
+        $response = UserResponseDTO::fromEntity($user, $role, $area, $permissions);
         return response()->json($response->toArray(), 200);
     }
 
@@ -132,9 +134,11 @@ class UserController extends Controller
     public function details(Request $request, $id)
     {
         $user = $this->userService->find($id);
+        $permissions = [];
         $role = null;
         if ($user->roleId) {
             $roleEntity = $this->roleService->find($user->roleId);
+            $permissions = $this->roleService->getWithFunctionalities($user->roleId);
             $role = [
                 'id' => $roleEntity->id,
                 'name' => $roleEntity->name->value(),
@@ -143,7 +147,7 @@ class UserController extends Controller
         }
         $area = $user->areaId ? $this->userService->getArea($user->areaId) : null;
         
-        $response = UserResponseDTO::fromEntity($user, $role, $area);
+        $response = UserResponseDTO::fromEntity($user, $role, $area, $permissions);
         return response()->json($response->toArray(), 200);
     }
 }

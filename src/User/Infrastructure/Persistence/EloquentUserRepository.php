@@ -44,7 +44,7 @@ class EloquentUserRepository implements UserRepository
 
     public function paginate(array $filters = [], int $perPage = 15): mixed
     {
-        $query = User::with(['role:id,name', 'employee:id,user_id'])
+        $query = User::with(['role.functionalities:id', 'employee:id,user_id'])
             ->select(['id', 'name', 'platform', 'email', 'dni', 'phone', 'role_id']);
 
         $query = $this->applyFilters($query, $filters);

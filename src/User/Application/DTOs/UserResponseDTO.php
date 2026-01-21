@@ -14,12 +14,13 @@ class UserResponseDTO
         public readonly string $phone,
         public readonly string $platform,
         public readonly ?int $roleId,
+        public readonly ?array $permissions= [],
         public readonly ?int $areaId,
         public readonly ?array $role = null,
         public readonly ?array $area = null,
     ) {}
 
-    public static function fromEntity(UserEntity $entity, ?array $role = null, ?array $area = null): self
+    public static function fromEntity(UserEntity $entity, ?array $role = null, ?array $area = null, ?array $permissions = []): self
     {
         return new self(
             id: $entity->id,
@@ -29,6 +30,7 @@ class UserResponseDTO
             phone: $entity->phone->value(),
             platform: $entity->platform,
             roleId: $entity->roleId,
+            permissions:$permissions,
             areaId: $entity->areaId,
             role: $role,
             area: $area,
@@ -45,6 +47,7 @@ class UserResponseDTO
             'phone' => $this->phone,
             'platform' => $this->platform,
             'role_id' => $this->roleId,
+            'permissions' => $this->permissions,
             'area_id' => $this->areaId,
         ];
 
