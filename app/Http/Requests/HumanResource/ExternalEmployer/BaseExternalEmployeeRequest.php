@@ -31,7 +31,7 @@ abstract class BaseExternalEmployeeRequest extends FormRequest
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'cost_line_id' => 'required|numeric|exists:cost_lines,id',
-            'cropped_image' => 'nullable|max:5220',
+            'cropped_image' => 'nullable',
             'gender' => 'required|in:Masculino,Femenino',
             'address' => 'required|string|max:500',
             'birthdate' => 'required|date|before_or_equal:' . $maxAgeDate . '|after_or_equal:' . $minAgeDate,

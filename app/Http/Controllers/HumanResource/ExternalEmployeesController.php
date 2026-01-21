@@ -76,5 +76,24 @@ class ExternalEmployeesController extends Controller
         return response()->json(['message' => 'External employee deleted successfully'], 200);
     }
 
+    /**
+     * GET /api/human-resource/external-employees/{id}/profile-image
+     * Get profile image for external employee
+     */
+    public function showExternalProfileImage(int $id): BinaryFileResponse
+    {
+        return $this->queryService->getProfileImage($id);
+    }
+
+    /**
+     * GET /api/human-resource/external-employees/{id}/curriculum-vitae
+     * Preview curriculum vitae for external employee
+     */
+    public function previewCurriculumVitae(int $id): BinaryFileResponse
+    {
+        return $this->queryService->getCurriculumVitae($id);
+    }
+
+
    
 }

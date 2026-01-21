@@ -25,7 +25,13 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/HumanResource/external-employees.php'));
+
+            // Modular: HumanResource/GrupalDocuments
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('routes/HumanResource/grupal-documents.php'));
         });
     }
 }
+
 
