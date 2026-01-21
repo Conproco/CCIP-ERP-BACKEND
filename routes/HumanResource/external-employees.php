@@ -18,5 +18,9 @@ Route::prefix('human-resource/external-employees')->group(function () {
     // Lista paginada de empleados externos con filtros
     Route::get('/list', [ExternalEmployeesController::class, 'getExternalEmployees'])->name('hr.external-employees.list');
 
-    
+    // CRUD
+    Route::post('/', [ExternalEmployeesController::class, 'createExternalEmployee'])->name('hr.external-employees.store');
+    Route::put('/{external_id}', [ExternalEmployeesController::class, 'updateExternalEmployee'])->name('hr.external-employees.update')->whereNumber('external_id');
+    Route::delete('/{external_id}', [ExternalEmployeesController::class, 'deleteExternalEmployee'])->name('hr.external-employees.destroy')->whereNumber('external_id');
+
 });

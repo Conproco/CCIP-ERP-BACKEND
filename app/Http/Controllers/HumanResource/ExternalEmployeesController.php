@@ -43,6 +43,38 @@ class ExternalEmployeesController extends Controller
         $employees = $this->queryService->getExternalEmployees($filters);
         return response()->json($employees, 200);
     }
+    
+    /**
+     * POST /api/human-resource/external-employees
+     * Create a new external employee
+     */
+    public function createExternalEmployee(StoreExternalEmployeeRequest $request): JsonResponse
+    {
+        $dto = $this->storeNormalizer->normalize($request);
+        $externalEmployee = $this->commandService->store($dto);
+        return response()->json($externalEmployee, 201);
+    }
+
+    /**
+     * PUT /api/human-resource/external-employees/{external_id}
+     * Update an existing external employee
+     */
+    public function updateExternalEmployee(UpdateExternalEmployeeRequest $request, int $external_id): JsonResponse
+    {
+        $dto = $this->updateNormalizer->normalize($request, $external_id);
+        $externalEmployee = $this->commandService->update($dto);
+        return response()->json($externalEmployee, 200);
+    }
+
+    /**
+     * DELETE /api/human-resource/external-employees/{external_id}
+     * Delete an external employee
+     */
+    public function deleteExternalEmployee(int $external_id): JsonResponse
+    {
+        $this->commandService->delete($external_id);
+        return response()->json(['message' => 'External employee deleted successfully'], 200);
+    }
 
    
 }
