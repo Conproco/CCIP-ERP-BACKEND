@@ -23,4 +23,8 @@ Route::prefix('human-resource/external-employees')->group(function () {
     Route::put('/{external_id}', [ExternalEmployeesController::class, 'updateExternalEmployee'])->name('hr.external-employees.update')->whereNumber('external_id');
     Route::delete('/{external_id}', [ExternalEmployeesController::class, 'deleteExternalEmployee'])->name('hr.external-employees.destroy')->whereNumber('external_id');
 
+    // Archivos
+    Route::get('/{id}/profile-image', [ExternalEmployeesController::class, 'showExternalProfileImage'])->name('hr.external-employees.profile-image')->whereNumber('id');
+    Route::get('/{id}/curriculum-vitae', [ExternalEmployeesController::class, 'previewCurriculumVitae'])->name('hr.external-employees.curriculum-vitae')->whereNumber('id');
+    
 });
