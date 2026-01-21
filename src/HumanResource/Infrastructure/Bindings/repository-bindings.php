@@ -26,9 +26,16 @@ use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentFamilyDepende
 use Src\HumanResource\Domain\Ports\Repositories\Employees\HealthRepositoryInterface;
 use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentHealthRepository;
 
+use Src\HumanResource\Domain\Ports\Repositories\Employees\DocumentSectionRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentDocumentSectionRepository;
+
 // External Employees Repositories
 use Src\HumanResource\Domain\Ports\Repositories\ExternalEmployees\ExternalEmployeeRepositoryInterface;
 use Src\HumanResource\Infrastructure\Persistence\ExternalEmployees\EloquentExternalEmployeeRepository;
+
+// GrupalDocuments Repositories
+use Src\HumanResource\Domain\Ports\Repositories\GrupalDocuments\GrupalDocumentRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\GrupalDocuments\EloquentGrupalDocumentRepository;
 
 return [
         // Employees
@@ -40,8 +47,14 @@ return [
     EmergencyContactRepositoryInterface::class => EloquentEmergencyContactRepository::class,
     FamilyDependentRepositoryInterface::class => EloquentFamilyDependentRepository::class,
     HealthRepositoryInterface::class => EloquentHealthRepository::class,
+    DocumentSectionRepositoryInterface::class => EloquentDocumentSectionRepository::class,
 
         // External Employees
     ExternalEmployeeRepositoryInterface::class => EloquentExternalEmployeeRepository::class,
+
+        // GrupalDocuments
+    GrupalDocumentRepositoryInterface::class => EloquentGrupalDocumentRepository::class,
 ];
+
+
 
