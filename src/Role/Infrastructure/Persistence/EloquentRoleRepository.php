@@ -105,7 +105,7 @@ class EloquentRoleRepository implements RoleRepository
 
     public function getWithFunctionalities(int $id): ?RoleEntity
     {
-        $role = Role::with('functionalities')->find($id);
+        $role = Role::with(['functionalities.permissions'])->find($id);
         
         return $role ? $this->toEntity($role) : null;
     }
@@ -134,8 +134,29 @@ class EloquentRoleRepository implements RoleRepository
     private function toEntity(Role $model): RoleEntity
     {
         $functionalities = [];
+        $permissions = [];
+        
         if ($model->relationLoaded('functionalities')) {
-            $functionalities = $model->functionalities->pluck('id')->toArray();
+            $allPermissions = collect();
+            
+            $functionalities = $model->functionalities->map(function($f) use (&$allPermissions) {
+                // cargamos permisos de funcionalidades
+                if ($f->relationLoaded('permissions')) {
+                    $allPermissions = $allPermissions->concat($f->permissions);
+                }
+                
+                return [
+                    'id' => $f->id,
+                    'key_name' => $f->key_name,
+                    'display_name' => $f->display_name
+                ];
+            })->toArray();
+
+            // Formateamos los permisos y eliminamos duplicados (varias funcionalidades pueden compartir el mismo permiso)
+            $permissions = $allPermissions->unique('id')->map(fn($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+            ])->values()->toArray();
         }
 
         return new RoleEntity(
@@ -143,6 +164,7 @@ class EloquentRoleRepository implements RoleRepository
             name: new RoleName($model->name),
             description: new RoleDescription($model->description),
             functionalities: $functionalities,
+            permissions: $permissions,
             created_at: $model->created_at ? $model->created_at->toDateTimeString() : null,
             updated_at: $model->updated_at ? $model->updated_at->toDateTimeString() : null,
         );

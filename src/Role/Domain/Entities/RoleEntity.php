@@ -12,6 +12,7 @@ class RoleEntity
         public RoleName $name,
         public RoleDescription $description,
         public array $functionalities = [],
+        public array $permissions = [],
         public ?string $created_at = null,
         public ?string $updated_at = null,
     ) {}
@@ -23,6 +24,7 @@ class RoleEntity
             name: new RoleName($data['name']),
             description: new RoleDescription($data['description'] ?? null),
             functionalities: $data['functionalities'] ?? [],
+            permissions: $data['permissions'] ?? [],
         );
     }
 
@@ -33,6 +35,7 @@ class RoleEntity
             'name' => $this->name->value(),
             'description' => $this->description->value(),
             'functionalities' => $this->functionalities,
+            'permissions' => $this->permissions,
         ];
     }
 
@@ -49,6 +52,11 @@ class RoleEntity
     public function updateFunctionalities(array $functionalities): void
     {
         $this->functionalities = $functionalities;
+    }
+
+    public function updatePermissions(array $permissions): void
+    {
+        $this->permissions = $permissions;
     }
 
     public function addFunctionality(int $functionalityId): void
