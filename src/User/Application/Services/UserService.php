@@ -66,6 +66,17 @@ class UserService
         return $this->userRepository->delete($id);
     }
 
+    public function restore(int $id): bool
+    {
+        $user = $this->userRepository->findWithTrashed($id);
+        
+        if (!$user) {
+            throw new UserNotFoundException($id);
+        }
+
+        return $this->userRepository->restore($id);
+    }
+
     public function find(int $id): UserEntity
     {
         $user = $this->userRepository->find($id);

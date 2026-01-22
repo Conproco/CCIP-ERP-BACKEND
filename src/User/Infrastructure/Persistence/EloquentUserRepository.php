@@ -92,6 +92,19 @@ class EloquentUserRepository implements UserRepository
         return $user->delete();
     }
 
+    public function findWithTrashed(int $id): ?UserEntity
+    {
+        $user = User::withTrashed()->find($id);
+        
+        return $user ? $this->toEntity($user) : null;
+    }
+    
+    public function restore(int $id): bool
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        return $user->restore();
+    }
+    
     public function exists(string $field, string $value, ?int $excludeId = null): bool
     {
         $query = User::where($field, $value);

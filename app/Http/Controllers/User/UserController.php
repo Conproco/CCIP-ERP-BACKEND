@@ -85,11 +85,17 @@ class UserController extends Controller
 
     public function getConstants()
     {
-        $roles = $this->roleService->getAllExceptAdmin();
+        $roles = array_map(fn($role) => [
+            'id' => $role['id'],
+            'name' => $role['name']
+        ], $this->roleService->getAllExceptAdmin());
+
         $data = [
             'roles' => $roles,
-            'areas' => $this->userService->getAllAreas()
+            'areas' => $this->userService->getAllAreas() 
+            
         ];
+        
         return response()->json($data, 200);
     }
 
@@ -132,6 +138,18 @@ class UserController extends Controller
         $this->userService->delete($id, $request->password);
         return response()->json(['message' => 'Usuario eliminado correctamente'], 200);
     }
+
+    public function restore(int $id)
+    {   
+        try{
+            
+            $this->userService->restore($id);
+            return response()->json(['message' => 'Usuario restaurado correctamente'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al restaurar el producto: ' . $e->getMessage()], 500);
+        }
+    }
+
 
     public function details(Request $request, $id)
     {

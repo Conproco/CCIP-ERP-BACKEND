@@ -22,6 +22,10 @@ interface UserRepository
 
     public function delete(int $id): bool;
 
+    public function findWithTrashed(int $id): ?UserEntity;
+
+    public function restore(int $id): bool;
+
     public function exists(string $field, string $value, ?int $excludeId = null): bool;
 
     public function getWithRelations(int $id, array $relations = []): ?UserEntity;

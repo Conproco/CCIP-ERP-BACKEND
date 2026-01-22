@@ -15,10 +15,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Usuarios
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'getUsers']);
+        Route::get('/constants', [UserController::class, 'getConstants']);
         Route::get('/{id}', [UserController::class, 'getUser']); 
-        Route::post('/', [UserController::class, 'store']); // Crear 
+        Route::post('/', [UserController::class, 'store']); // Crear }
+        Route::post('/{userId}/restore', [UserController::class, 'restore']);
         Route::put('/{id}', [UserController::class, 'update']); 
         Route::delete('/{id}', [UserController::class, 'delete']);
+        
     });
 
     //Roles
