@@ -41,6 +41,18 @@ use Src\HumanResource\Infrastructure\Persistence\GrupalDocuments\EloquentGrupalD
 use Src\HumanResource\Domain\Ports\Repositories\Employees\PayrollDetailRepositoryInterface;
 use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentPayrollDetailRepository;
 
+// Payroll Repository
+use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollRepository;
+
+// PayrollDeduction Repository
+use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDeductionRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollDeductionRepository;
+
+// PayrollDeductionInstallment Repository
+use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDeductionInstallmentRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollDeductionInstallmentRepository;
+
 return [
         // Employees
     EmployeeRepositoryInterface::class => EloquentEmployeeRepository::class,
@@ -59,7 +71,16 @@ return [
 
         // GrupalDocuments
     GrupalDocumentRepositoryInterface::class => EloquentGrupalDocumentRepository::class,
+
+        // Payroll
+    PayrollRepositoryInterface::class => EloquentPayrollRepository::class,
+    PayrollDeductionRepositoryInterface::class => EloquentPayrollDeductionRepository::class,
+    PayrollDeductionInstallmentRepositoryInterface::class => EloquentPayrollDeductionInstallmentRepository::class,
+
 ];
+
+
+
 
 
 

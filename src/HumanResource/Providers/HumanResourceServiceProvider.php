@@ -166,6 +166,51 @@ class HumanResourceServiceProvider extends ServiceProvider
         $this->app->singleton(\Src\HumanResource\Application\Normalizer\GrupalDocuments\GrupalDocumentIndexNormalizer::class);
         $this->app->singleton(\Src\HumanResource\Application\Normalizer\GrupalDocuments\StoreGrupalDocumentRequestNormalizer::class);
         $this->app->singleton(\Src\HumanResource\Application\Normalizer\GrupalDocuments\UpdateGrupalDocumentRequestNormalizer::class);
+
+        // Payroll Services
+        $this->app->singleton(\Src\HumanResource\Application\Normalizer\Payroll\PayrollIndexNormalizer::class);
+        $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollQueryService::class, function ($app) {
+            return new \Src\HumanResource\Application\Services\Payroll\PayrollQueryService(
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Application\Normalizer\Payroll\PayrollIndexNormalizer::class)
+            );
+        });
+
+        // PayrollDeduction Services
+        $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollDeductionQueryService::class, function ($app) {
+            return new \Src\HumanResource\Application\Services\Payroll\PayrollDeductionQueryService(
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDeductionRepositoryInterface::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
+
+        $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollDeductionCommandService::class, function ($app) {
+            return new \Src\HumanResource\Application\Services\Payroll\PayrollDeductionCommandService(
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDeductionRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDeductionInstallmentRepositoryInterface::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
+
+        // PayrollDeduction Normalizers
+        $this->app->singleton(\Src\HumanResource\Application\Normalizer\Payroll\StorePayrollDeductionRequestNormalizer::class);
+        $this->app->singleton(\Src\HumanResource\Application\Normalizer\Payroll\UpdatePayrollDeductionRequestNormalizer::class);
+
+        // PayrollDeductionInstallment Services
+        $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollDeductionInstallmentQueryService::class, function ($app) {
+            return new \Src\HumanResource\Application\Services\Payroll\PayrollDeductionInstallmentQueryService(
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDeductionInstallmentRepositoryInterface::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
+
+        $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollDeductionInstallmentCommandService::class, function ($app) {
+            return new \Src\HumanResource\Application\Services\Payroll\PayrollDeductionInstallmentCommandService(
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDeductionInstallmentRepositoryInterface::class),
+                $app->make(FileStorageInterface::class)
+            );
+        });
+
     }
 
     public function boot(): void
@@ -173,6 +218,3 @@ class HumanResourceServiceProvider extends ServiceProvider
         // Register routes, migrations, etc. if needed
     }
 }
-
-
-
