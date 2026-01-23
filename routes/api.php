@@ -3,7 +3,8 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Role\RoleController;
-use App\Http\Controllers\Inventory\ProductController;
+use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\Auth\PasswordController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -36,9 +37,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [RoleController::class, 'delete']);
     });
 
+    
+    // Perfil
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('{id}/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        Route::put('{id}/password/', [PasswordController::class, 'update'])->name('password.update');
+    });
+    
+
     //Imports de otros modulos 
     require __DIR__.'/HumanResource/employees.php';
     require __DIR__.'/Products/Products.php';
+    //require __DIR__.'/Warehouses/Warehouses.php';
+    require __DIR__.'/HumanResource/external-employees.php';
 
     // Logout
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);

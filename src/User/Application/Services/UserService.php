@@ -149,4 +149,32 @@ class UserService
     {
         return $this->userRepository->getAllAreas();
     }
+
+    public function updateProfile(int $userId, array $data): UserEntity
+    {
+        $this->find($userId);
+        $profileData = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+        ];
+
+        return $this->userRepository->update($userId, $profileData);
+    }
+
+    public function updatePassword(int $userId, string $currentPassword, string $newPassword, string $newPasswordConfirmation): UserEntity
+    {
+        if ($newPassword !== $newPasswordConfirmation) {
+            throw new \InvalidArgumentException('The new password confirmation does not match.');
+        }
+
+        $user = $this->find($userId);
+
+        if (!Hash::check($currentPassword, $user->password)) {
+            throw new InvalidCredentialsException();
+        }
+
+        return $this->userRepository->update($userId, [
+            'password' => Hash::make($newPassword)
+        ]);
+    }
 }
