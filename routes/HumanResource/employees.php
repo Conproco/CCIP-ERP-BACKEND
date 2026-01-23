@@ -37,5 +37,7 @@ Route::prefix('human-resource/employees')->group(function () {
 
     // Cumpleaños
     Route::get('/happy-birthday', [ManagementEmployees::class, 'happyBirthday'])->name('hr.employees.happy-birthday');
-
+    
+    // Constantes de empleados activos para payroll
+    Route::get('/active-constants', [ManagementEmployees::class, 'getActiveEmployeesConstant'])->name('hr.employees.active-constants');
 });

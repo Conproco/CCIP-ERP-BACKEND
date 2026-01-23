@@ -32,7 +32,7 @@ class LaravelStorageAdapter implements FileStorageInterface
     public function get(string $path): BinaryFileResponse
     {
         $fullPath = Storage::path($path);
-        
+
         if (!file_exists($fullPath)) {
             abort(404, 'Archivo no encontrado');
         }
@@ -44,7 +44,7 @@ class LaravelStorageAdapter implements FileStorageInterface
     public function download(string $path, ?string $downloadName = null): BinaryFileResponse
     {
         $fullPath = Storage::path($path);
-        
+
         if (!file_exists($fullPath)) {
             abort(404, 'Archivo no encontrado');
         }
@@ -64,12 +64,12 @@ class LaravelStorageAdapter implements FileStorageInterface
         if (!$this->exists($oldPath)) {
             return false;
         }
-        
+
         return Storage::move($oldPath, $newPath);
     }
 
     public function generateFilename(string $baseName, string $kind, string $extension): string
     {
-        return Str::slug($baseName, '') . "{$kind}_" . uniqid('', true) . '.' . $extension;
+        return Str::slug($baseName, '') . "_{$kind}_" . uniqid('', true) . '.' . $extension;
     }
 }

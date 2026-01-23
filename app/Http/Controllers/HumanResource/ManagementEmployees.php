@@ -203,4 +203,14 @@ class ManagementEmployees extends Controller
         return response()->json(['happyBirthday' => $data], 200);
     }
 
+    /**
+     * GET /api/human-resource/employees/active-constants
+     * Obtener constantes de empleados activos para payroll
+     */
+    public function getActiveEmployeesConstant(): JsonResponse
+    {
+        $data = $this->queryService->getActiveEmployeesConstant();
+        return response()->json($data, 200);
+    }
+
 }

@@ -132,6 +132,18 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
         });
     }
 
+    //Metodo para constantes de payroll de empleados activos
+    public function getActiveEmployeesConstant(): Collection
+    {
+        return $this->model
+            ->select(['id', 'name'])
+            ->whereHas('contract', function ($query) {
+                $query->where('state', 'Active');
+            })
+            ->orderBy('name', 'asc')
+            ->get();
+    }
+
     private function toDomainEntity(EmployeeModel $model): EmployeeEntity
     {
         return new EmployeeEntity(

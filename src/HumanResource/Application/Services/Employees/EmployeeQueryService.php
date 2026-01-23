@@ -246,6 +246,11 @@ class EmployeeQueryService
         }
         return $costLinesArr;
     }
+    //Metodo para obtener constantes de empleados activos para payroll
+    public function getActiveEmployeesConstant()
+    {
+        return $this->employeeRepository->getActiveEmployeesConstant();
+    }
 }
 
 
