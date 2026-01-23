@@ -10,7 +10,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->routes(function () {
-            
+
             Route::middleware('api')
                 ->group(base_path('routes/api.php'));
 
@@ -20,16 +20,14 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/HumanResource/employees.php'));
 
             // Modular: HumanResource/ExternalEmployees
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/HumanResource/external-employees.php'));
+            //Route::middleware('api')
+            //    ->prefix('api')
+            //    ->group(base_path('routes/HumanResource/external-employees.php'));
 
-            // Modular: HumanResource/GrupalDocuments
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/HumanResource/grupal-documents.php'));
+            
         });
     }
 }
+
 
 

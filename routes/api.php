@@ -34,6 +34,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Imports de otros modulos 
     require __DIR__.'/HumanResource/employees.php';
     require __DIR__.'/Products/Products.php';
+    require __DIR__.'/HumanResource/external-employees.php';
+    require __DIR__.'/HumanResource/grupal-documents.php';
+    require __DIR__.'/HumanResource/payroll.php';
 
     // Logout
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
