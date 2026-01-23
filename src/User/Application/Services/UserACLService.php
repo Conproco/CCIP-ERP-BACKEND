@@ -17,6 +17,7 @@ class UserACLService
                 'name' => $user->name,
                 'role' => $role?->name ?? 'N/A'
             ],
+            'permissions' => [],
             'modules' => []
         ];
 
@@ -31,6 +32,10 @@ class UserACLService
         } else {
             $functionalities = $role->functionalities()->with('permissions')->get();
         }
+
+        $data['permissions'] = $functionalities->flatMap(function ($func) {
+            return $func->permissions->pluck('name');
+        })->unique()->values()->toArray();
 
         // 2. Obtener IDs de sub-módulos y módulos relacionados
         $submoduleIds = $functionalities->pluck('module_id')->unique();
