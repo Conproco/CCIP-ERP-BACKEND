@@ -17,4 +17,6 @@ interface EmployeeRepositoryInterface
     public function getEmployeesByState(string $state, bool $paginate = true, int $perPage = 15): mixed;
     public function search(?string $state, ?string $searchTerm, ?array $costLines): Collection;
     public function getBirthdaysInRange(\DateTime $startDate, \DateTime $endDate): Collection;
+    //Metodo para constantes de payroll de empleados activos
+    public function getActiveEmployeesConstant(): Collection;
 }
