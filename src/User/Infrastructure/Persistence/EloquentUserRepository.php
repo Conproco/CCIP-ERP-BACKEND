@@ -194,6 +194,6 @@ class EloquentUserRepository implements UserRepository
 
     public function getAllAreas(): array
     {
-        return \App\Models\Area::all()->toArray();
+        return \App\Models\Area::select('id', 'name')->get()->toArray();
     }
 }
