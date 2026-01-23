@@ -11,7 +11,10 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']) -> name(
 
 // Rutas Protegidas
 Route::middleware(['auth:sanctum'])->group(function () {
-    
+    //me para permmisos siempre
+   
+
+
     // Usuarios
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'getUsers']);
@@ -23,6 +26,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [UserController::class, 'delete']);
         
     });
+
+     Route::get('/auth/me', [AuthenticatedSessionController::class, 'me']);
 
     //Roles
     Route::prefix('roles')->group(function () {
