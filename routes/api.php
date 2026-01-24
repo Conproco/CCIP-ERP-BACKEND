@@ -11,30 +11,27 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthenticatedSessionController::class, 'store']) -> name('login');
 
 // Rutas Protegidas
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'permission'])->group(function () {
 
     // Usuarios
     Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'getUsers']);
-        Route::get('/constants', [UserController::class, 'getConstants']);
-        Route::get('/{id}', [UserController::class, 'getUser']); 
-        Route::post('/', [UserController::class, 'store']); // Crear }
-        Route::post('/{userId}/restore', [UserController::class, 'restore']);
-        Route::put('/{id}', [UserController::class, 'update']); 
-        Route::delete('/{id}', [UserController::class, 'delete']);
-        
+        Route::get('/', [UserController::class, 'getUsers'])->name('getUsers');
+        Route::get('/constants', [UserController::class, 'getConstants'])->name('getConstants');
+        Route::get('/{id}', [UserController::class, 'getUser'])->name('getUser'); 
+        Route::post('/', [UserController::class, 'store'])->name('register.post');
+        Route::post('/{userId}/restore', [UserController::class, 'restore'])->name('users.restore');
+        Route::put('/{id}', [UserController::class, 'update'])->name('users.update'); 
+        Route::delete('/{id}', [UserController::class, 'delete'])->name('users.destroy');
     });
-
-    //Route::get('/auth/me', [AuthenticatedSessionController::class, 'me']);
 
     //Roles
     Route::prefix('roles')->group(function () {
-        Route::get('/', [RoleController::class, 'getRoles']);
-        Route::get('/modules', [RoleController::class, 'rols_index']); 
-        Route::get('/{id}', [RoleController::class, 'details']);       
-        Route::post('/', [RoleController::class, 'store']);
-        Route::put('/{id}', [RoleController::class, 'update']);
-        Route::delete('/{id}', [RoleController::class, 'delete']);
+        Route::get('/', [RoleController::class, 'getRoles'])->name('getRols');
+        Route::get('/modules', [RoleController::class, 'rols_index'])->name('rols.index'); 
+        Route::get('/{id}', [RoleController::class, 'details'])->name('rols.details');       
+        Route::post('/', [RoleController::class, 'store'])->name('rols.store');
+        Route::put('/{id}', [RoleController::class, 'update'])->name('rols.update');
+        Route::delete('/{id}', [RoleController::class, 'delete'])->name('rols.delete');
     });
 
     
