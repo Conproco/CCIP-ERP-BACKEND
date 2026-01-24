@@ -62,6 +62,40 @@ class ManagementEmployees extends Controller
     }
 
     /**
+     * GET /api/human-resource/employees/active
+     * Buscar empleados activos con filtros opcionales
+     */
+    public function searchActive(Request $request): JsonResponse
+    {
+        $employees = $this->queryService->searchEmployees(
+            'Active',
+            $request->input('search'),
+            $request->input('cost_line', []),
+            true,
+            (int) $request->input('per_page', 15)
+        );
+
+        return response()->json($employees, 200);
+    }
+
+    /**
+     * GET /api/human-resource/employees/inactive
+     * Buscar empleados inactivos (despedidos) con filtros opcionales
+     */
+    public function searchInactive(Request $request): JsonResponse
+    {
+        $employees = $this->queryService->searchEmployees(
+            'Inactive',
+            $request->input('search'),
+            $request->input('cost_line', []),
+            true,
+            (int) $request->input('per_page', 15)
+        );
+
+        return response()->json($employees, 200);
+    }
+
+    /**
      * GET /api/human-resource/employees/information_additional
      * Datos para formulario de creación
      */

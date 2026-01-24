@@ -89,7 +89,7 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
         return $paginate ? $query->paginate($perPage) : $query->get();
     }
 
-    public function search(?string $state, ?string $searchTerm, ?array $costLines): Collection
+    public function search(?string $state, ?string $searchTerm, ?array $costLines, bool $paginate = true, int $perPage = 15): mixed
     {
         $query = $this->model->select(['id', 'name', 'lastname', 'dni', 'phone1', 'cropped_image'])
             ->with('contract.cost_line')
@@ -98,6 +98,7 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
                     $q->where('state', $state);
                 }
             });
+
         if ($searchTerm) {
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', '%' . $searchTerm . '%')
@@ -106,12 +107,16 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
                     ->orWhere('dni', 'like', '%' . $searchTerm . '%');
             });
         }
+
         if ($costLines && count($costLines) > 0) {
             $query->whereHas('contract.cost_line', function ($q) use ($costLines) {
                 $q->whereIn('name', $costLines);
             });
         }
-        return $query->get();
+
+        $query->orderBy('lastname', 'asc');
+
+        return $paginate ? $query->paginate($perPage) : $query->get();
     }
 
     public function getBirthdaysInRange(\DateTime $startDate, \DateTime $endDate): Collection

@@ -73,7 +73,7 @@ class EmployeeQueryService
 
     public function searchEmployees(?string $state, ?string $search, ?array $costLine, bool $paginate = true, int $perPage = 15): object
     {
-        $employees = $this->employeeRepository->search($state, $search, $costLine);
+        $employees = $this->employeeRepository->search($state, $search, $costLine, $paginate, $perPage);
         $costLines = $this->costLineRepository->getAll();
 
         foreach ($this->normalizers as $normalizer) {
