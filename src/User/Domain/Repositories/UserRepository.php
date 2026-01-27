@@ -26,6 +26,8 @@ interface UserRepository
 
     public function restore(int $id): bool;
 
+    public function onlyTrashed(array $filters = [], int $perPage = 15): mixed;
+
     public function exists(string $field, string $value, ?int $excludeId = null): bool;
 
     public function getWithRelations(int $id, array $relations = []): ?UserEntity;
@@ -35,4 +37,6 @@ interface UserRepository
     public function getArea(int $areaId): ?array;
 
     public function getAllAreas(): array;
+
+    public function search(string $search, array $fields = [], bool $includeTrashed = false): array;
 }

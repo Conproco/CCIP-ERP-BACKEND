@@ -44,13 +44,21 @@ class EloquentUserRepository implements UserRepository
 
     public function paginate(array $filters = [], int $perPage = 15): mixed
     {
-        $query = User::withTrashed() 
-            ->with(['role.functionalities:id', 'employee:id,user_id'])
+        $query = User::with(['role:id,name']) 
             ->select(['id', 'name', 'platform', 'email', 'dni', 'phone', 'role_id', 'deleted_at']); // Añadimos deleted_at
 
         $query = $this->applyFilters($query, $filters);
 
-        return $query->paginate($perPage)->withQueryString();
+        return $query->paginate($perPage)->through(fn($user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'platform' => $user->platform,
+            'role' => $user->role?->name,
+            'email' => $user->email,
+            'dni' => $user->dni,
+            'phone' => $user->phone,
+            'deleted_at' => $user->deleted_at,
+        ]);
     }
 
     public function save(UserEntity $user): UserEntity
@@ -105,6 +113,26 @@ class EloquentUserRepository implements UserRepository
         $user = User::withTrashed()->findOrFail($id);
         return $user->restore();
     }
+
+    public function onlyTrashed(array $filters = [], int $perPage = 15): mixed
+    {
+        $query = User::onlyTrashed() 
+            ->with(['role:id,name']) // Filtra solo eliminados lógicamente
+            ->select(['id', 'name', 'platform', 'email', 'dni', 'phone', 'role_id', 'deleted_at']);
+
+        $query = $this->applyFilters($query, $filters);
+
+        return $query->paginate($perPage)->through(fn($user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'platform' => $user->platform,
+            'role' => $user->role?->name,
+            'email' => $user->email,
+            'dni' => $user->dni,
+            'phone' => $user->phone,
+            'deleted_at' => $user->deleted_at,
+        ]);
+    }
     
     public function exists(string $field, string $value, ?int $excludeId = null): bool
     {
@@ -126,6 +154,10 @@ class EloquentUserRepository implements UserRepository
 
     private function applyFilters($query, array $filters)
     {
+        if (isset($filters['includeTrashed']) && $filters['includeTrashed']) {
+            $query->withTrashed();
+        }
+    
         if (isset($filters['searchQuery'])) {
             $searchQuery = $filters['searchQuery'];
             $query->where(function ($q) use ($searchQuery) {
@@ -196,5 +228,41 @@ class EloquentUserRepository implements UserRepository
     public function getAllAreas(): array
     {
         return \App\Models\Area::select('id', 'name')->get()->toArray();
+    }
+
+    public function search(string $search, array $fields = [], bool $includeTrashed = false): array
+    {
+        $query = User::with(['role:id,name'])
+            ->select(['id', 'name', 'platform', 'email', 'dni', 'phone', 'role_id', 'deleted_at']);
+
+        
+        if ($includeTrashed) {
+            $query->withTrashed();
+        } else {
+            $query->whereNull('deleted_at');
+        }
+
+        if (!empty($fields) && !empty($search)) {
+            $query->where(function ($q) use ($search, $fields) {
+                foreach ($fields as $field) {
+                    $q->orWhere($field, 'like', "%$search%");
+                }
+            });
+        }
+
+        return $query->orderBy('name')
+            ->limit(50)
+            ->get()
+            ->map(fn($user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'platform' => $user->platform,
+                'rol' => $user->role?->name,
+                'email' => $user->email,
+                'dni' => $user->dni,
+                'phone' => $user->phone,
+                'deleted_at' => $user->deleted_at
+            ])
+            ->toArray();
     }
 }

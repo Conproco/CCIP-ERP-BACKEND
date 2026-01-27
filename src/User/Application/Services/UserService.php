@@ -108,6 +108,17 @@ class UserService
         return $this->userRepository->paginate($filters->toArray(), $perPage);
     }
 
+    public function search(string $search, array $fields = [], bool $includeTrashed = false): array
+    {
+        return $this->userRepository->search($search, $fields, $includeTrashed);
+    }
+
+    public function getInactiveUsers(UserFiltersDTO $filters, int $perPage = 15): mixed
+    {
+        return $this->userRepository->onlyTrashed($filters->toArray(), $perPage);
+    }
+
+
     public function getWithRelations(int $id, array $relations = []): UserEntity
     {
         $user = $this->userRepository->getWithRelations($id, $relations);

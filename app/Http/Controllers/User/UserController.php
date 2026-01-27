@@ -31,8 +31,42 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        $filters = UserFiltersDTO::fromArray($request->only(['platforms', 'searchQuery']));
-        $data = $this->userService->paginate($filters);
+        $filters = UserFiltersDTO::fromArray($request->all());
+        $perPage = (int) $request->get('per_page', 15);
+        $data = $this->userService->paginate($filters, $perPage);
+        return response()->json($data, 200);
+    }
+
+    public function search(Request $request)
+    {
+        $search = (string) ($request->query('search') ?? '');
+        $fields = $request->query('fields');
+        $includeTrashed = filter_var($request->query('include_trashed', false), FILTER_VALIDATE_BOOLEAN);
+        
+        if (is_string($fields)) {
+            $fields = explode(',', $fields);
+        }
+
+        if (empty($fields)) {
+            $fields = ['name', 'email', 'dni'];
+        }
+
+        $users = $this->userService->search($search, $fields, $includeTrashed);
+        
+        return response()->json($users);
+    }
+
+
+    public function getInactiveUsers(Request $request)
+    {
+        $filters = UserFiltersDTO::fromArray($request->all());
+        $data = $this->userService->getInactiveUsers($filters);
+        return response()->json($data, 200);
+    }
+    public function getActiveUsers(Request $request)
+    {
+        $filters = UserFiltersDTO::fromArray($request->all());
+        $data = $this->userService->paginate($filters, (int) $request->get('per_page', 15));
         return response()->json($data, 200);
     }
 

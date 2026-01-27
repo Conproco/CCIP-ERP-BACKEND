@@ -11,11 +11,14 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthenticatedSessionController::class, 'store']) -> name('login');
 
 // Rutas Protegidas
-Route::middleware(['auth:sanctum', 'permission'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
 
     // Usuarios
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'getUsers'])->name('getUsers');
+        Route::get('/search', [UserController::class, 'search'])->name('users.search');
+        Route::get('/active', [UserController::class, 'getUsers'])->name('users.active');
+        Route::get('/inactive', [UserController::class, 'getInactiveUsers'])->name('users.inactive');
         Route::get('/constants', [UserController::class, 'getConstants'])->name('getConstants');
         Route::get('/{id}', [UserController::class, 'getUser'])->name('getUser'); 
         Route::post('/', [UserController::class, 'store'])->name('register.post');
@@ -27,8 +30,8 @@ Route::middleware(['auth:sanctum', 'permission'])->group(function () {
     //Roles
     Route::prefix('roles')->group(function () {
         Route::get('/', [RoleController::class, 'getRoles'])->name('getRols');
-        Route::get('/modules', [RoleController::class, 'rols_index'])->name('rols.index'); 
-        Route::get('/{id}', [RoleController::class, 'details'])->name('rols.details');       
+        Route::get('/modules', [RoleController::class, 'rols_index'])->name('rols.index');
+        Route::get('/{id}', [RoleController::class, 'details'])->name('rols.details')      ;
         Route::post('/', [RoleController::class, 'store'])->name('rols.store');
         Route::put('/{id}', [RoleController::class, 'update'])->name('rols.update');
         Route::delete('/{id}', [RoleController::class, 'delete'])->name('rols.delete');
@@ -47,7 +50,8 @@ Route::middleware(['auth:sanctum', 'permission'])->group(function () {
     //Imports de otros modulos 
     require __DIR__.'/HumanResource/employees.php';
     require __DIR__.'/Products/Products.php';
-    //require __DIR__.'/Warehouses/Warehouses.php';
+    require __DIR__.'/Warehouses/Warehouses.php';
+    require __DIR__.'/Inventory/moves.php';
     require __DIR__.'/HumanResource/external-employees.php';
 
     // Logout
