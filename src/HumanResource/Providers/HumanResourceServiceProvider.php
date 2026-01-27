@@ -215,6 +215,9 @@ class HumanResourceServiceProvider extends ServiceProvider
         $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollDetailExpenseQueryService::class, function ($app) {
             return new \Src\HumanResource\Application\Services\Payroll\PayrollDetailExpenseQueryService(
                 $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDetailExpenseRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDetailMonetaryIncomeRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDetailTaxAndContributionRepositoryInterface::class),
                 $app->make(FileStorageInterface::class)
             );
         });
@@ -229,6 +232,7 @@ class HumanResourceServiceProvider extends ServiceProvider
         // PayrollDetailExpense Normalizers
         $this->app->singleton(\Src\HumanResource\Application\Normalizer\Payroll\UpdatePayrollDetailExpenseNormalizer::class);
         $this->app->singleton(\Src\HumanResource\Application\Normalizer\Payroll\MassiveUpdateExpenseNormalizer::class);
+        $this->app->singleton(\Src\HumanResource\Application\Normalizer\Payroll\StorePayrollDetailExpenseRequestNormalizer::class);
 
     }
 

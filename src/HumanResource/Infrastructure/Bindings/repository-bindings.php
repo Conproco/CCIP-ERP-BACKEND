@@ -53,6 +53,18 @@ use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollDeductio
 use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDeductionInstallmentRepositoryInterface;
 use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollDeductionInstallmentRepository;
 
+// PayrollDetailExpense Repository
+use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDetailExpenseRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollDetailExpenseRepository;
+
+// PayrollDetailMonetaryIncome Repository
+use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDetailMonetaryIncomeRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollDetailMonetaryIncomeRepository;
+
+// PayrollDetailTaxAndContribution Repository
+use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDetailTaxAndContributionRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollDetailTaxAndContributionRepository;
+
 return [
         // Employees
     EmployeeRepositoryInterface::class => EloquentEmployeeRepository::class,
@@ -76,6 +88,9 @@ return [
     PayrollRepositoryInterface::class => EloquentPayrollRepository::class,
     PayrollDeductionRepositoryInterface::class => EloquentPayrollDeductionRepository::class,
     PayrollDeductionInstallmentRepositoryInterface::class => EloquentPayrollDeductionInstallmentRepository::class,
+    PayrollDetailExpenseRepositoryInterface::class => EloquentPayrollDetailExpenseRepository::class,
+    PayrollDetailMonetaryIncomeRepositoryInterface::class => EloquentPayrollDetailMonetaryIncomeRepository::class,
+    PayrollDetailTaxAndContributionRepositoryInterface::class => EloquentPayrollDetailTaxAndContributionRepository::class,
 
 ];
 

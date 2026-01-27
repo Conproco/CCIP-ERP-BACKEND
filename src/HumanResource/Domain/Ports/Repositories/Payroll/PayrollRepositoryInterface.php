@@ -15,4 +15,9 @@ interface PayrollRepositoryInterface
      * Find a payroll by ID
      */
     public function find(int $id): ?object;
+
+    /**
+     * Find a payroll by ID or fail with exception
+     */
+    public function findOrFail(int $id): object;
 }

@@ -30,4 +30,9 @@ class EloquentPayrollRepository implements PayrollRepositoryInterface
     {
         return $this->model->find($id);
     }
+
+    public function findOrFail(int $id): object
+    {
+        return $this->model->findOrFail($id);
+    }
 }

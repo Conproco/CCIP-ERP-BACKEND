@@ -62,6 +62,14 @@ return [
     UpdateGrupalDocumentRequestNormalizer::class => [
         UpdateGrupalDocumentRequestNormalizer::class,
     ],
+
+    // Payroll Normalizers
+    \Src\HumanResource\Application\Normalizer\Payroll\GetAmountByExpenseTypeRequestNormalizer::class => [
+        \Src\HumanResource\Application\Normalizer\Payroll\GetAmountByExpenseTypeRequestNormalizer::class,
+    ],
+    \Src\HumanResource\Application\Normalizer\Payroll\GetAmountMassiveRequestNormalizer::class => [
+        \Src\HumanResource\Application\Normalizer\Payroll\GetAmountMassiveRequestNormalizer::class,
+    ],
 ];
 
 
