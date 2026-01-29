@@ -14,8 +14,13 @@ use App\Http\Controllers\HumanResource\Payroll\PayrollExpenseController;
 */
 
 Route::prefix('human-resource/payroll')->group(function () {
-    // Spreadsheets - Index
-    Route::get('/', [SpreadsheetsController::class, 'index'])->name('hr.payroll.index');
+    // Spreadsheets controller
+    Route::get('/', [SpreadsheetsController::class, 'index'])->name('payroll.index');
+
+    
+    Route::patch('/{id}/state', [SpreadsheetsController::class, 'updateState'])->name('payroll.state.update')->whereNumber('id');
+
+
 
     // Deductions
     Route::prefix('deductions')->group(function () {

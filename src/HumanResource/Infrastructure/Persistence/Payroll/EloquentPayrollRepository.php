@@ -35,4 +35,11 @@ class EloquentPayrollRepository implements PayrollRepositoryInterface
     {
         return $this->model->findOrFail($id);
     }
+
+    public function updateState(int $id, bool $state): object
+    {
+        $payroll = $this->model->findOrFail($id);
+        $payroll->update(['state' => $state]);
+        return $payroll->fresh();
+    }
 }

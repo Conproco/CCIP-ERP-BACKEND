@@ -20,4 +20,9 @@ interface PayrollRepositoryInterface
      * Find a payroll by ID or fail with exception
      */
     public function findOrFail(int $id): object;
+
+    /**
+     * Update payroll state
+     */
+    public function updateState(int $id, bool $state): object;
 }
