@@ -2,27 +2,28 @@
 
 namespace Src\HumanResource\Domain\Ports\Repositories\Payroll;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface PayrollRepositoryInterface
 {
-    /**
-     * Get all payrolls paginated, ordered by month descending
-     */
     public function getAllPaginated(int $perPage = 15): LengthAwarePaginator;
 
-    /**
-     * Find a payroll by ID
-     */
     public function find(int $id): ?object;
 
-    /**
-     * Find a payroll by ID or fail with exception
-     */
     public function findOrFail(int $id): object;
 
-    /**
-     * Update payroll state
-     */
     public function updateState(int $id, bool $state): object;
+
+    // Store payroll methods
+    public function create(array $data): object;
+
+    public function createPension(int $payrollId, array $pensionData): object;
+
+    public function createPayrollDetail(array $data): object;
+
+    public function createPayrollDetailIncome(int $payrollDetailId, int $incomeParamId, float $amount): object;
+
+    public function createPayrollDetailContribution(int $payrollDetailId, int $tacParamId, float $amount): object;
+
+    public function createPayrollDetailDiscount(int $payrollDetailId, int $discountParamId, float $amount): object;
 }

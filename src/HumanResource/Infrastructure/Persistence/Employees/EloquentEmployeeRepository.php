@@ -15,7 +15,8 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
 {
     public function __construct(
         private EmployeeModel $model
-    ) {}
+    ) {
+    }
 
     public function find(int $id): ?EmployeeEntity
     {
@@ -149,6 +150,30 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
             ->get();
     }
 
+    /**
+     * Get active employees for a specific payroll month
+     */
+    public function getActiveEmployeesForMonth(string $month): Collection
+    {
+        $startOfMonth = Carbon::parse($month)->startOfMonth();
+        $endOfMonth = Carbon::parse($month)->endOfMonth();
+
+        return $this->model
+            ->select('id')
+            ->with('contract')
+            ->whereHas('contract', function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereDate('hire_date', '<=', $endOfMonth)
+                    ->where(function ($q) use ($startOfMonth, $endOfMonth) {
+                        $q->where('state', 'Active')
+                            ->orWhere(function ($subQuery) use ($startOfMonth, $endOfMonth) {
+                                $subQuery->where('state', 'Inactive')
+                                    ->whereBetween('fired_date', [$startOfMonth, $endOfMonth]);
+                            });
+                    });
+            })
+            ->get();
+    }
+
     private function toDomainEntity(EmployeeModel $model): EmployeeEntity
     {
         return new EmployeeEntity(
@@ -158,9 +183,9 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
             gender: $model->gender,
             stateCivil: $model->state_civil,
             birthdate: $model->birthdate,
-            dni: new Dni($model->dni), 
+            dni: new Dni($model->dni),
             email: new Email($model->email),
-            emailCompany: $model->email_company ? new Email($model->email_company) : null, 
+            emailCompany: $model->email_company ? new Email($model->email_company) : null,
             phone1: new Telefono($model->phone1),
             croppedImage: $model->cropped_image,
             lPolicy: $model->l_policy,

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\HumanResource\Payroll;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollRequest;
 use Src\HumanResource\Application\Services\Payroll\PayrollQueryService;
 use Src\HumanResource\Application\Services\Payroll\PayrollCommandService;
+use Src\HumanResource\Application\Data\Payroll\StorePayrollData;
 use Illuminate\Http\JsonResponse;
 
 class SpreadsheetsController extends Controller
@@ -17,24 +19,36 @@ class SpreadsheetsController extends Controller
 
     /**
      * Get paginated list of payrolls
+     * 
+     * @response array{payroll: PayrollData[], pagination: array}
      */
     public function index(): JsonResponse
     {
         $data = $this->payrollQueryService->getIndexData();
-        return response()->json($data->toArray());
+        return response()->json($data);
     }
 
     /**
-     * PATCH /payroll/{id}/state
-     * Update payroll state to true (closed/completed)
+     * Store a new payroll with all associated records
      * 
+     * @bodyParam month string required The payroll month (YYYY-MM format). Example: 2026-01
+     * @bodyParam state boolean required Initial payroll state. Example: false
+     */
+    public function store(StorePayrollRequest $request): JsonResponse
+    {
+        try {
+            $data = StorePayrollData::from($request->validated());
+            $payroll = $this->payrollCommandService->store($data);
+            return response()->json($payroll, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Update payroll state to closed/completed
+     *
      * @urlParam id integer required The payroll ID. Example: 1
-     * @response 200 {
-     *   "id": 1,
-     *   "month": "2024-01",
-     *   "state": true,
-     *   ...
-     * }
      */
     public function updateState(int $id): JsonResponse
     {
