@@ -17,6 +17,7 @@ Route::prefix('human-resource/payroll')->group(function () {
     // Spreadsheets controller
     Route::get('/', [SpreadsheetsController::class, 'index'])->name('payroll.index');
     Route::post('/', [SpreadsheetsController::class, 'store'])->name('payroll.store');
+    Route::get('/{id}', [SpreadsheetsController::class, 'show'])->name('spreadsheets.index')->whereNumber('id');
 
     Route::patch('/{id}/state', [SpreadsheetsController::class, 'updateState'])->name('payroll.state.update')->whereNumber('id');
     Route::delete('/{id}', [SpreadsheetsController::class, 'destroy'])->name('payroll.delete')->whereNumber('id');

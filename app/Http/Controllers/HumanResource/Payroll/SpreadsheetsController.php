@@ -66,4 +66,15 @@ class SpreadsheetsController extends Controller
         $this->payrollCommandService->destroy($id);
         return response()->json(['message' => 'Planilla eliminada exitosamente'], 200);
     }
+
+    /**
+     * Get a specific payroll with its details and metadata (pension types)
+     *
+     * @urlParam id integer required The payroll ID. Example: 1
+     */
+    public function show(int $id): JsonResponse
+    {
+        $data = $this->payrollQueryService->find($id);
+        return response()->json($data);
+    }
 }
