@@ -3,23 +3,21 @@
 namespace Src\HumanResource\Application\Services\Payroll;
 
 use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollRepositoryInterface;
-use Src\HumanResource\Application\Normalizer\Payroll\PayrollIndexNormalizer;
-use Src\HumanResource\Application\Dto\Payroll\PayrollIndexDto;
+use Src\HumanResource\Application\Data\Payroll\PayrollPaginatedData;
 
 class PayrollQueryService
 {
     public function __construct(
-        private PayrollRepositoryInterface $payrollRepository,
-        private PayrollIndexNormalizer $indexNormalizer
+        private PayrollRepositoryInterface $payrollRepository
     ) {
     }
 
     /**
      * Get paginated list of payrolls with calculated totals
      */
-    public function getIndexData(int $perPage = 15): PayrollIndexDto
+    public function getIndexData(int $perPage = 15): PayrollPaginatedData
     {
         $payrolls = $this->payrollRepository->getAllPaginated($perPage);
-        return $this->indexNormalizer->normalize($payrolls);
+        return PayrollPaginatedData::fromPaginator($payrolls);
     }
 }
