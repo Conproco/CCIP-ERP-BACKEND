@@ -2,57 +2,60 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\FunctionalityPermission;
-use App\Models\Permission;
 use Closure;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PermissionMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next, $permissions = null): Response
+
+    public function handle(Request $request, Closure $next, $functionality = null): Response
     {
         if (!auth()->check()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            abort(401, 'logueate p.');
         }
         $user = auth()->user();
 
-        // Super Admin (rol_id = 1) gets all permissions
-        if ($user->role_id === 1) {
-            return $next($request);
-        }
-        $permissionName = $permissions ?? $request->route()->getName();
+        // Se ha eliminado el bypass de Super Admin (ID 1) para asegurar que 
+        // todos los roles tengan sus funcionalidades explícitamente asignadas.
 
-        if (!$permissionName) {
-            return response()->json(['message' => 'Route is not protected by an explicit permission name.'], 403);
+        // Tomamos el nombre de la ruta si no se pasa funcionalidad por parámetro
+        $keyToValidate = $functionality ?? $request->route()->getName();
+
+        if (!$keyToValidate) {
+            // Si la ruta no tiene nombre, la dejamos pasar pero registramos un warning 
+            // para que el desarrollador sepa que debe nombrarla.
+            Log::warning("Ruta sin nombre detectada en middleware de permisos: " . $request->path());
+            return $next($request);
         }
 
         if (!$user->relationLoaded('role')) {
             $user->load('role');
         }
-        
-        $functionalities = $user->role->functionalities()->pluck('functionalities.id');
-        
-        $permission = Permission::where('name', $permissionName)->first();
 
-        if (!$permission) {
-            return response()->json(['message' => "Permission '{$permissionName}' not defined in system."], 403);
+        // Soporte para jerarquía por puntos (ej: see_users_table.search -> valida contra see_users_table o see_users_table.search)
+        $keys = [$keyToValidate];
+        if (str_contains($keyToValidate, '.')) {
+            $keys[] = explode('.', $keyToValidate)[0];
         }
 
-        $hasPermission = FunctionalityPermission::whereIn('functionality_id', $functionalities)
-            ->where('permission_id', $permission->id)
+        $hasAccess = $user->role->functionalities()
+            ->whereIn('key_name', $keys)
             ->exists();
 
-        if ($hasPermission) {
+        Log::info('Permission Check', [
+            'user_id' => $user->id,
+            'role' => $user->role->name,
+            'keys_checked' => $keys,
+            'has_access' => $hasAccess
+        ]);
+
+        if ($hasAccess) {
             return $next($request);
         }
 
-        return response()->json(['message' => 'You do not have the required permissions to perform this action.'], 403);
+        abort(403, "No tienes permiso funcional: {$keyToValidate}");
     }
 }
