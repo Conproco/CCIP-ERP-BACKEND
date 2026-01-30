@@ -167,14 +167,21 @@ class HumanResourceServiceProvider extends ServiceProvider
         $this->app->singleton(\Src\HumanResource\Application\Normalizer\GrupalDocuments\StoreGrupalDocumentRequestNormalizer::class);
         $this->app->singleton(\Src\HumanResource\Application\Normalizer\GrupalDocuments\UpdateGrupalDocumentRequestNormalizer::class);
 
-        // Payroll Services
-        $this->app->singleton(\Src\HumanResource\Application\Normalizer\Payroll\PayrollIndexNormalizer::class);
         $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollQueryService::class, function ($app) {
             return new \Src\HumanResource\Application\Services\Payroll\PayrollQueryService(
                 $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollRepositoryInterface::class),
-                $app->make(\Src\HumanResource\Application\Normalizer\Payroll\PayrollIndexNormalizer::class)
             );
         });
+
+        $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollCommandService::class, function ($app) {
+            return new \Src\HumanResource\Application\Services\Payroll\PayrollCommandService(
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Employees\EmployeeRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Application\Services\Payroll\PayrollCalculationService::class)
+            );
+        });
+
+        $this->app->singleton(\Src\HumanResource\Application\Services\Payroll\PayrollCalculationService::class);
 
         // PayrollDeduction Services
         $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollDeductionQueryService::class, function ($app) {
@@ -238,6 +245,10 @@ class HumanResourceServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Register routes, migrations, etc. if needed
+        // Register events
+        \Illuminate\Support\Facades\Event::listen(
+            \Src\HumanResource\Domain\Events\PayrollDeleted::class,
+            \Src\HumanResource\Application\Listeners\RevertInstallmentsOnPayrollDeleted::class
+        );
     }
 }

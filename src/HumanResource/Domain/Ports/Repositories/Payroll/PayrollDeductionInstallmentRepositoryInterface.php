@@ -28,4 +28,9 @@ interface PayrollDeductionInstallmentRepositoryInterface
      * Delete all installments for a deduction
      */
     public function deleteByDeductionId(int $deductionId): bool;
+
+    /**
+     * Revert installments to "Pendiente" and clean up associations
+     */
+    public function revertByDiscountIds(array $discountIds): void;
 }

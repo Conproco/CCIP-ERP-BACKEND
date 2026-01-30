@@ -55,4 +55,15 @@ class SpreadsheetsController extends Controller
         $payroll = $this->payrollCommandService->updateState($id);
         return response()->json($payroll);
     }
+
+    /**
+     * Delete a payroll and its associated records
+     *
+     * @urlParam id integer required The payroll ID to delete. Example: 1
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $this->payrollCommandService->destroy($id);
+        return response()->json(['message' => 'Planilla eliminada exitosamente'], 200);
+    }
 }

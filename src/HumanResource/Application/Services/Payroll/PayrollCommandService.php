@@ -11,6 +11,10 @@ use Src\HumanResource\Application\Data\Payroll\StorePayrollData;
 use Illuminate\Support\Facades\DB;
 use App\Models\PayrollDeductionInstallment;
 use Carbon\Carbon;
+use Src\HumanResource\Domain\Exceptions\PayrollAlreadyClosedException;
+use Src\HumanResource\Domain\Events\PayrollDeleted;
+
+use Exception;
 
 class PayrollCommandService
 {
@@ -80,9 +84,10 @@ class PayrollCommandService
                         || str_contains($contractType, $pensionType);
                 });
 
+
                 // Throw error if pension type not found
                 if (!$employeePension) {
-                    throw new \Exception(
+                    throw new Exception(
                         "No se encontró el tipo de pensión '{$contract->pension_type}' para el empleado ID {$employee->id}. " .
                         "Tipos disponibles: " . $pensions->pluck('type')->implode(', ')
                     );
@@ -123,6 +128,35 @@ class PayrollCommandService
             $payroll->total_amount = 0; // Will be calculated by SQL aggregation
 
             return PayrollData::fromModel($payroll);
+        });
+    }
+
+    /**
+     * Delete a payroll and its associated records, reverting deductions
+     *
+     * @throws PayrollAlreadyClosedException
+     */
+    public function destroy(int $payrollId): void
+    {
+        DB::transaction(function () use ($payrollId) {
+            $payroll = $this->payrollRepository->findOrFail($payrollId);
+
+            // Business Rule: Cannot delete closed payroll
+            if ($payroll->state) {
+                throw new PayrollAlreadyClosedException($payrollId);
+            }
+
+            // 1. Get discount IDs linked to this payroll
+            $discountIds = $this->payrollRepository->getDiscountIdsByPayroll($payrollId);
+
+            // 2. Dispatch event BEFORE deletion (Crucial for data visibility in listener)
+            if (!empty($discountIds)) {
+                // The listener will use these IDs to find and revert installments
+                event(new PayrollDeleted($payrollId, $discountIds));
+            }
+
+            // 3. Perform physical deletion of the payroll
+            $this->payrollRepository->delete($payrollId);
         });
     }
 

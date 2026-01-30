@@ -123,4 +123,30 @@ class EloquentPayrollRepository implements PayrollRepositoryInterface
             'amount' => $amount,
         ]);
     }
+
+    public function delete(int $id): void
+    {
+        $payroll = $this->model->findOrFail($id);
+        $payroll->delete();
+    }
+
+    public function getDiscountIdsByPayroll(int $payrollId): array
+    {
+        return DB::table('payroll_details as pd')
+            ->join('payroll_detail_monetary_discounts as pmd', 'pd.id', '=', 'pmd.payroll_detail_id')
+            ->where('pd.payroll_id', $payrollId)
+            ->pluck('pmd.id')
+            ->toArray();
+    }
+
+    public function getEmployeesWithDiscounts(int $payrollId): array
+    {
+        return DB::table('employees as e')
+            ->join('payroll_details as pd', 'e.id', '=', 'pd.employee_id')
+            ->join('payroll_detail_monetary_discounts as pmd', 'pd.id', '=', 'pmd.payroll_detail_id')
+            ->where('pd.payroll_id', $payrollId)
+            ->select('e.id', 'e.name', 'e.lastname', 'pmd.amount')
+            ->get()
+            ->toArray();
+    }
 }

@@ -53,4 +53,25 @@ class EloquentPayrollDeductionInstallmentRepository implements PayrollDeductionI
     {
         return $this->model->where('payroll_deduction_id', $deductionId)->delete() > 0;
     }
+
+    public function revertByDiscountIds(array $discountIds): void
+    {
+        $installments = $this->model->whereIn('payroll_detail_monetary_discount_id', $discountIds)->get();
+
+        foreach ($installments as $installment) {
+            $expenseId = $installment->general_expense_id;
+
+            // 1. Revert state and UNLINK the GeneralExpense (Crucial step for FK check)
+            $installment->update([
+                'payment_status' => 'Pendiente',
+                'payroll_detail_monetary_discount_id' => null,
+                'general_expense_id' => null
+            ]);
+
+            // 2. Now that the link is gone, we can safely delete the GeneralExpense
+            if ($expenseId) {
+                \App\Models\GeneralExpense::where('id', $expenseId)->delete();
+            }
+        }
+    }
 }

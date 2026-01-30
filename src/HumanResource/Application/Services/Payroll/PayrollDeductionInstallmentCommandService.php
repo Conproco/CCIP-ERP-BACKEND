@@ -42,4 +42,17 @@ class PayrollDeductionInstallmentCommandService
             return $installment;
         });
     }
+
+    /**
+     * Revert installments to "Pendiente" when payroll is deleted.
+     * Called by the PayrollDeleted event listener.
+     */
+    public function revertByDiscountIds(array $discountIds): void
+    {
+        if (empty($discountIds)) {
+            return;
+        }
+
+        $this->repository->revertByDiscountIds($discountIds);
+    }
 }

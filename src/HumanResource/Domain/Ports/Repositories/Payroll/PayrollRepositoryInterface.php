@@ -26,4 +26,10 @@ interface PayrollRepositoryInterface
     public function createPayrollDetailContribution(int $payrollDetailId, int $tacParamId, float $amount): object;
 
     public function createPayrollDetailDiscount(int $payrollDetailId, int $discountParamId, float $amount): object;
+
+    public function delete(int $id): void;
+
+    public function getDiscountIdsByPayroll(int $payrollId): array;
+
+    public function getEmployeesWithDiscounts(int $payrollId): array;
 }
