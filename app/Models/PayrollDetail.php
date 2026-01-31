@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Src\Shared\Domain\Enums\ApprovalState;
 use App\Constants\PintConstants;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -169,18 +170,18 @@ class PayrollDetail extends Model
         $net_pay = $this->net_pay;
 
         if (empty($payment_details) || round($payment_details, 2) <= 0) {
-            return ['state' => PintConstants::PENDIENTE, 'amount' => $net_pay];
+            return ['state' => ApprovalState::PENDIENTE->value, 'amount' => $net_pay];
         }
 
         if (round($net_pay, 2) == round($payment_details, 2)) {
-            return ['state' => PintConstants::COMPLETADO, 'amount' => round($net_pay - $payment_details, 2)];
+            return ['state' => ApprovalState::COMPLETADO->value, 'amount' => round($net_pay - $payment_details, 2)];
         }
 
         if (round($net_pay, 2) < round($payment_details, 2)) {
-            return ['state' => PintConstants::EXCEDIDO, 'amount' => round($net_pay - $payment_details, 2)];
+            return ['state' => ApprovalState::EXCEDIDO->value, 'amount' => round($net_pay - $payment_details, 2)];
         }
 
-        return ['state' => PintConstants::PROCESO, 'amount' => round($net_pay - $payment_details, 2)];
+        return ['state' => ApprovalState::PROCESO->value, 'amount' => round($net_pay - $payment_details, 2)];
     }
 
 

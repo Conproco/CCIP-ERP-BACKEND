@@ -1,5 +1,8 @@
 <?php
 
+
+use Illuminate\Support\ServiceProvider;
+
 return [
 
     /*
@@ -122,5 +125,15 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+
+    'providers' => ServiceProvider::defaultProviders()->merge([
+
+        //MOVIDOS HACIA BOOTSTRAP/PROVIDERS.PHP POR CONFIG DE VERSION DE LARAVEL 11
+        //App\Providers\ScrambleServiceProvider::class, 
+        //App\Providers\RouteServiceProvider::class,
+        //Src\HumanResource\Providers\HumanResourceServiceProvider::class,
+        //Src\Shared\Providers\FileServiceProvider::class,
+    ])->toArray(),
 
 ];

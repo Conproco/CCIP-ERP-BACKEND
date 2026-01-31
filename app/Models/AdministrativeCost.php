@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\AuditableTrait;
+use Src\Shared\Infrastructure\Persistence\Traits\AuditableTrait;
+use Src\Shared\Domain\Enums\ApprovalState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Constants\PintConstants;
@@ -63,8 +64,8 @@ class AdministrativeCost extends Model
     public function getRealStateAttribute()
     {
         if ($this->general_expense()->first()?->account_statement_id) {
-            return PintConstants::ACEPTADO_VALIDADO;
+            return ApprovalState::ACEPTADO_VALIDADO->value;
         }
-        return PintConstants::PENDIENTE;
+        return ApprovalState::PENDIENTE->value;
     }
 }

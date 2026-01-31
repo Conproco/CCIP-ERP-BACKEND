@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Src\Shared\Domain\Enums\DocumentType;
 use App\Constants\PintConstants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,7 +46,8 @@ class GeneralExpense extends Model
         return $this->hasOne(AdministrativeCost::class, "general_expense_id");
     }
 
-    public function account_statement() {
+    public function account_statement()
+    {
         return $this->belongsTo(AccountStatement::class, 'account_statement_id');
     }
 
@@ -62,7 +64,7 @@ class GeneralExpense extends Model
 
     public function getBillAttribute()
     {
-        if (!$this->expense_type === PintConstants::FACTURA) {
+        if (!$this->expense_type === DocumentType::FACTURA->value) {
             return ["serie" => null, "doc" => null];
         }
         if (!$this->validateDocNumber($this->doc_number)) {
@@ -95,7 +97,8 @@ class GeneralExpense extends Model
     }
 
     //Attributes in common
-    public function getExternalRelationAttribute() {
+    public function getExternalRelationAttribute()
+    {
         $relation = null;
         $relationAttributes = [
             'real_state',
@@ -104,11 +107,11 @@ class GeneralExpense extends Model
             'description',
         ];
         if ($this->pext_project_expense()->exists())
-        $relation = $this->pext_project_expense()->first();
+            $relation = $this->pext_project_expense()->first();
         if ($this->payroll_detail_expense()->exists())
-        $relation = $this->payroll_detail_expense()->first();
+            $relation = $this->payroll_detail_expense()->first();
         if ($this->administrativeCost()->exists())
-        $relation = $this->administrativeCost()->first();
+            $relation = $this->administrativeCost()->first();
 
         return $relation->append($relationAttributes);
     }

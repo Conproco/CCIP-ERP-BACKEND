@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\AuditableTrait;
+use Src\Shared\Infrastructure\Persistence\Traits\AuditableTrait;
+use Src\Shared\Domain\Enums\ExpenseType;
 use App\Constants\PintConstants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -58,7 +59,7 @@ class Project extends Model
         return $this->pext_project_expenses()
             ->where('is_accepted', 1)
             ->where('fixedOrAdditional', 'Variables')
-            ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
+            ->whereNotIn('expense_type', ExpenseType::thatDontCount())
             ->get()
             ->sum(function ($expense) {
                 return $expense->real_amount;
@@ -119,7 +120,8 @@ class Project extends Model
 
     public function project_quotes()
     {
-        return $this->hasMany(ProjectQuote::class)->orderBy('created_at', 'asc');;
+        return $this->hasMany(ProjectQuote::class)->orderBy('created_at', 'asc');
+        ;
     }
 
     public function projectTitles()
