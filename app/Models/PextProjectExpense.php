@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-use App\AuditableTrait;
+use Src\Shared\Infrastructure\Persistence\Traits\AuditableTrait;
+use Src\Shared\Domain\Enums\ApprovalState;
+use Src\Shared\Domain\Enums\OriginType;
 use App\Constants\PintConstants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -67,8 +69,8 @@ class PextProjectExpense extends Model
     public function getOriginAttribute()
     {
         return $this->parent()->getResults()
-            ? PintConstants::PARTICION
-            : PintConstants::ORIGINAL;
+            ? OriginType::PARTICION->value
+            : OriginType::ORIGINAL->value;
     }
 
     public function parent()
@@ -110,28 +112,28 @@ class PextProjectExpense extends Model
     public function getRealStateAttribute()
     {
         if ($this->is_accepted === 0) {
-            return PintConstants::RECHAZADO;
+            return ApprovalState::RECHAZADO->value;
         }
         if ($this->is_accepted && $this->general_expense()->first()?->account_statement_id) {
-            return PintConstants::ACEPTADO_VALIDADO;
+            return ApprovalState::ACEPTADO_VALIDADO->value;
         }
         if ($this->is_accepted) {
-            return PintConstants::ACEPTADO;
+            return ApprovalState::ACEPTADO->value;
         }
-        return PintConstants::PENDIENTE;
+        return ApprovalState::PENDIENTE->value;
     }
 
     public function getAdminStateAttribute()
     {
         if ($this->is_accepted === null) {
-            return PintConstants::NO_DISPONIBLE;
+            return ApprovalState::NO_DISPONIBLE->value;
         }
         if ($this->admin_is_accepted === 0) {
-            return PintConstants::RECHAZADO;
+            return ApprovalState::RECHAZADO->value;
         }
         if ($this->admin_is_accepted) {
-            return PintConstants::ACEPTADO;
+            return ApprovalState::ACEPTADO->value;
         }
-        return PintConstants::PENDIENTE;
+        return ApprovalState::PENDIENTE->value;
     }
 }

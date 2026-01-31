@@ -2,7 +2,7 @@
 
 namespace App\Models\ShoppingArea;
 
-use App\AuditableTrait;
+use Src\Shared\Infrastructure\Persistence\Traits\AuditableTrait;
 use App\Models\CostLine;
 use App\Models\Provider;
 use App\Models\User;

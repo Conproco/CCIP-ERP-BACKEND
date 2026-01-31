@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\AuditableTrait;
+use Src\Shared\Infrastructure\Persistence\Traits\AuditableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Constants\PintConstants;
+use Src\HumanResource\Domain\Enums\Payroll\PayrollExpenseStateType;
 
 class PayrollDetailExpense extends Model
 {
@@ -38,17 +38,19 @@ class PayrollDetailExpense extends Model
     }
 
 
-    public function getDescriptionAttribute(){
+    public function getDescriptionAttribute()
+    {
         return "Pago de nómina de $this->employee_name";
     }
 
 
-    public function getRealStateAttribute() {
+    public function getRealStateAttribute()
+    {
         if ($this->general_expense()->first()?->account_statement_id) {
-            return PintConstants::ACEPTADO_VALIDADO;
+            return PayrollExpenseStateType::ACEPTADO_VALIDADO->value;
         }
-        return PintConstants::PENDIENTE;
+        return PayrollExpenseStateType::PENDIENTE->value;
     }
 
- 
+
 }
