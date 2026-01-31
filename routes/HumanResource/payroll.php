@@ -21,6 +21,7 @@ Route::prefix('human-resource/payroll')->group(function () {
 
     Route::patch('/{id}/state', [SpreadsheetsController::class, 'updateState'])->name('payroll.state.update')->whereNumber('id');
     Route::delete('/{id}', [SpreadsheetsController::class, 'destroy'])->name('payroll.delete')->whereNumber('id');
+    Route::get('/{id}/details', [SpreadsheetsController::class, 'getPayrollDetails'])->name('spreadsheets.get_payroll_details')->whereNumber('id');
 
 
 

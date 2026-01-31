@@ -37,9 +37,13 @@ use Src\HumanResource\Infrastructure\Persistence\ExternalEmployees\EloquentExter
 use Src\HumanResource\Domain\Ports\Repositories\GrupalDocuments\GrupalDocumentRepositoryInterface;
 use Src\HumanResource\Infrastructure\Persistence\GrupalDocuments\EloquentGrupalDocumentRepository;
 
-// PayrollDetail Repository
-use Src\HumanResource\Domain\Ports\Repositories\Employees\PayrollDetailRepositoryInterface;
-use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentPayrollDetailRepository;
+// PayrollDetail Repository (Employees module - used by FireEmployeeUseCase)
+use Src\HumanResource\Domain\Ports\Repositories\Employees\PayrollDetailRepositoryInterface as EmployeePayrollDetailRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Employees\EloquentPayrollDetailRepository as EmployeeEloquentPayrollDetailRepository;
+
+// PayrollDetail Repository (Payroll module - used by PayrollQueryService)
+use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDetailRepositoryInterface as PayrollPayrollDetailRepositoryInterface;
+use Src\HumanResource\Infrastructure\Persistence\Payroll\EloquentPayrollDetailRepository as PayrollEloquentPayrollDetailRepository;
 
 // Payroll Repository
 use Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollRepositoryInterface;
@@ -76,7 +80,7 @@ return [
     FamilyDependentRepositoryInterface::class => EloquentFamilyDependentRepository::class,
     HealthRepositoryInterface::class => EloquentHealthRepository::class,
     DocumentSectionRepositoryInterface::class => EloquentDocumentSectionRepository::class,
-    PayrollDetailRepositoryInterface::class => EloquentPayrollDetailRepository::class,
+    EmployeePayrollDetailRepositoryInterface::class => EmployeeEloquentPayrollDetailRepository::class,
 
         // External Employees
     ExternalEmployeeRepositoryInterface::class => EloquentExternalEmployeeRepository::class,
@@ -91,6 +95,7 @@ return [
     PayrollDetailExpenseRepositoryInterface::class => EloquentPayrollDetailExpenseRepository::class,
     PayrollDetailMonetaryIncomeRepositoryInterface::class => EloquentPayrollDetailMonetaryIncomeRepository::class,
     PayrollDetailTaxAndContributionRepositoryInterface::class => EloquentPayrollDetailTaxAndContributionRepository::class,
+    PayrollPayrollDetailRepositoryInterface::class => PayrollEloquentPayrollDetailRepository::class,
 
 ];
 

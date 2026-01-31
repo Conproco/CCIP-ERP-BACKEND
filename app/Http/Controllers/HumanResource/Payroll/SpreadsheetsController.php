@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HumanResource\Payroll;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollRequest;
+use App\Http\Requests\HumanResource\Payroll\GetPayrollDetailsRequest;
 use Src\HumanResource\Application\Services\Payroll\PayrollQueryService;
 use Src\HumanResource\Application\Services\Payroll\PayrollCommandService;
 use Src\HumanResource\Application\Data\Payroll\StorePayrollData;
@@ -76,5 +77,25 @@ class SpreadsheetsController extends Controller
     {
         $data = $this->payrollQueryService->find($id);
         return response()->json($data);
+    }
+
+    /**
+     * Get payroll details with employee data and calculated fields
+     *
+     * @urlParam id integer required The payroll ID. Example: 1
+     * @queryParam search string Search by employee name/lastname. Example: John
+     * @queryParam selectedPensionTypes array Filter by pension types. Example: ["ONP", "Integra"]
+     * @queryParam selectedStateTypes array Filter by verification state. Example: ["Pendiente", "Proceso"]
+     */
+    public function getPayrollDetails(GetPayrollDetailsRequest $request, int $id): JsonResponse
+    {
+        $details = $this->payrollQueryService->getPayrollDetails(
+            $id,
+            $request->search,
+            $request->selectedPensionTypes,
+            $request->selectedStateTypes
+        );
+
+        return response()->json($details);
     }
 }

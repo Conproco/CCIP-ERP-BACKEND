@@ -170,6 +170,7 @@ class HumanResourceServiceProvider extends ServiceProvider
         $this->app->bind(\Src\HumanResource\Application\Services\Payroll\PayrollQueryService::class, function ($app) {
             return new \Src\HumanResource\Application\Services\Payroll\PayrollQueryService(
                 $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollRepositoryInterface::class),
+                $app->make(\Src\HumanResource\Domain\Ports\Repositories\Payroll\PayrollDetailRepositoryInterface::class)
             );
         });
 
